@@ -76,12 +76,16 @@ class Enemy(GameObjects):
         if direction[0] < 0 and not self.flipped:
             self.flipped = True
             for x, img in enumerate(self.images):
-                self.images[x] = pygame.transform.flip(img, True, False)
+                self.images[x] = pygame.transform.flip(img, True, False) #Flips moving sprite animations
+            for x, img in enumerate(self.death): 
+                self.death[x] = pygame.transform.flip(img, True, False) #Flips death sprite animations
         
         elif direction[0] >= 0 and self.flipped:
             self.flipped = False
             for x, img in enumerate(self.images):
                 self.images[x] = pygame.transform.flip(img, True, False)
+            for x, img in enumerate(self.death):
+                self.death[x] = pygame.transform.flip(img, True, False)
 
         move_x, move_y = ((self.x + direction[0]), (self.y + direction[1]))
 

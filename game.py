@@ -140,8 +140,8 @@ class Game:
                                 self.money -= self.shop_menu.get_it_cost(main_menu_item_name)
                                 self.buy_tower(main_menu_item_name)
 
-                        # self.clicks.append(pos)
-                        # print(self.clicks)
+                        self.clicks.append(pos)
+                        print(self.clicks)
                         button_clicked = False
                         
                         #Currently pressing on an item on the menu
@@ -202,8 +202,8 @@ class Game:
         self.window.blit(self.background_img, (0, 0))
 
         # Testing purposes of mouse movement
-        # for p in self.clicks:
-        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+        for p in self.clicks:
+            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
 
         # Drawing towers
         for a in self.attack_towers:

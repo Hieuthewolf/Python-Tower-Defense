@@ -20,9 +20,9 @@ class Button:
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
         if self.menu.tower_name in Constants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - Constants.DIMENSIONS['supp_tower'][1] + 10
         else:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] - 45
+            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
 
     def click(self, X, Y):
         """
@@ -41,9 +41,9 @@ class Button:
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
         if self.menu.tower_name in Constants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - Constants.DIMENSIONS['supp_tower'][1] + 10
         else:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] - 45
+            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
 
     def draw(self, window):
         window.blit(self.image, (self.x, self.y))
