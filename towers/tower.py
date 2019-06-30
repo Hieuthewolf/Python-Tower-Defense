@@ -1,5 +1,5 @@
 from objectFormation import GameObjects
-from constants import Constants
+from constants import TowerConstants
 from usefulFunctions import import_images_numbers
 from menu.menu import Menu
 import pygame
@@ -21,7 +21,7 @@ class Tower(GameObjects):
         self.level = 1
 
         # Cost
-        self.cost = Constants.UPGRADE_COST[name]
+        self.cost = TowerConstants.UPGRADE_COST[name]
 
         # Tower dimensions
         self.width = self.dimensions[0]
@@ -34,7 +34,7 @@ class Tower(GameObjects):
         self.tower_images = []
 
         # Specific range for each tower
-        self.range = Constants.TOWER_RADIUS_RANGE[name]
+        self.range = TowerConstants.TOWER_RADIUS_RANGE[name]
 
         # Leveling up animation
         self.level_up_animation = False

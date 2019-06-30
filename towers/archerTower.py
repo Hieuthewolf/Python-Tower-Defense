@@ -1,7 +1,6 @@
 import pygame
 from .tower import Tower
 import os
-from constants import Constants
 import math
 from usefulFunctions import import_images_numbers
 
@@ -48,12 +47,12 @@ class ArcherTowerFar(Tower):
 
         if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
             self.archer_count += 1
-            if self.archer_count >= len(self.archer_images) * 5: 
+            if self.archer_count >= len(self.archer_images) * 3: 
                 self.archer_count = 0
         else:
             self.archer_count = 0
 
-        archer = self.archer_images[self.archer_count // 5] 
+        archer = self.archer_images[self.archer_count // 3] 
 
         #Padding so that the archer stays static when switching directions
         if not self.flipped:
@@ -64,7 +63,7 @@ class ArcherTowerFar(Tower):
         window.blit(archer, ((self.x + padding), (self.y - archer.get_height() - 30)))
             
 
-    def attack(self, enemies, dead_enemies, boss_dies):
+    def attack(self, enemies, dead_enemies):
         """
         attacks enemy in enemy list, modifying the list
         :param enemies: list of enemies
@@ -87,15 +86,14 @@ class ArcherTowerFar(Tower):
             target = lowest_health_enemies[0]
 
             #Decrements health bar of enemies only when the archer has finished its animation
-            if self.archer_count == 7: 
+            if self.archer_count == 12: 
                 target.health -= self.damage
 
             if target.health <= 0:
                 self.last_arrow_animation_count += 1
-                if self.last_arrow_animation_count >= 14 and self.archer_count >= 16:
+                if self.last_arrow_animation_count >= 4:
                     target.dead = True
                     dead_enemies.add(target)
-                    boss_dies = True
                     enemies.remove(target)
                     self.last_arrow_animation_count = 0
                     return target.crystal_worth

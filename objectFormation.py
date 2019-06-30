@@ -1,4 +1,4 @@
-from constants import Constants
+from constants import GameConstants, TowerConstants
 
 def distance(a, b):
     """Returns the Euclidian distance between the two tuple coordinates."""
@@ -11,14 +11,14 @@ class GameObjects:
         self.coord = coord
 
         #self.dimensions[0] = width; self.dimensions[1] = height
-        if name in Constants.MONSTER_NAMES:
-            self.dimensions = Constants.DIMENSIONS['monster'] #monsters
-        elif name in Constants.ATT_TOWER_NAMES:
-            self.dimensions = Constants.DIMENSIONS['att_tower'] #attack tower
-        elif name in Constants.SUP_TOWER_NAMES:
-            self.dimensions = Constants.DIMENSIONS['supp_tower'] #Support tower
+        if name in GameConstants.MONSTER_NAMES:
+            self.dimensions = GameConstants.DIMENSIONS['monster'] #monsters
+        elif name in TowerConstants.ATT_TOWER_NAMES:
+            self.dimensions = GameConstants.DIMENSIONS['att_tower'] #attack tower
+        elif name in TowerConstants.SUP_TOWER_NAMES:
+            self.dimensions = GameConstants.DIMENSIONS['supp_tower'] #Support tower
         else:
-            self.dimensions = Constants.DIMENSIONS['boss'] #bosses
+            self.dimensions = GameConstants.DIMENSIONS['boss'] #bosses
 
     def does_collides(self, other_object):
         abs_xDist = abs(other_object.coord[0] - self.coord[0])

@@ -1,5 +1,5 @@
 import pygame
-from constants import Constants
+from constants import GameConstants, TowerConstants
 import os
 
 pygame.font.init()
@@ -16,13 +16,13 @@ class Button:
         self.image = image
         self.menu = menu
         self.width, self.height = self.image.get_width(), self.image.get_height()
-        self.x = self.menu.x - Constants.DIMENSIONS['menu'][0] + self.width + 20
+        self.x = self.menu.x - GameConstants.DIMENSIONS['menu'][0] + self.width + 20
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
-        if self.menu.tower_name in Constants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - Constants.DIMENSIONS['supp_tower'][1] + 10
+        if self.menu.tower_name in TowerConstants.SUP_TOWER_NAMES:
+            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] + 10
         else:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 10
 
     def click(self, X, Y):
         """
@@ -37,13 +37,13 @@ class Button:
         return False
 
     def update_coordinates(self):
-        self.x = self.menu.x - Constants.DIMENSIONS['menu'][0] + self.width + 20
+        self.x = self.menu.x - GameConstants.DIMENSIONS['menu'][0] + self.width + 20
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
-        if self.menu.tower_name in Constants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - Constants.DIMENSIONS['supp_tower'][1] + 10
+        if self.menu.tower_name in TowerConstants.SUP_TOWER_NAMES:
+            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] + 10
         else:
-            self.y = self.menu.y - Constants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 10
 
     def draw(self, window):
         window.blit(self.image, (self.x, self.y))

@@ -4,11 +4,11 @@ import time
 import random
 
 #Importing enemies
-from enemies.monster import Monster_1, Monster_2, Monster_3, Monster_4
+from enemies.monster import *
 from enemies.boss import Balrog, KingSlime, Mano, Pianus, PinkBean
 
 #Importing constants
-from constants import Constants
+from constants import WaveConstants, GameConstants
 
 # #Importing useful functions
 # from usefulFunctions import createPathLayout
@@ -37,11 +37,11 @@ buy_support_range = pygame.transform.scale(pygame.image.load(os.path.join("image
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 clock = pygame.time.Clock()
-    
+
 class Game:
     def __init__(self):
-        self.window = pygame.display.set_mode((Constants.DIMENSIONS['game'][0], Constants.DIMENSIONS['game'][1]))
-        self.enemies = [Pianus('pianus')]
+        self.window = pygame.display.set_mode((GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
+        self.enemies = [PinkBean('pink_bean')]
         self.attack_towers = []
         # self.support_towers = [DamageTower('support_tower_damage', (436, 527)), RangeTower('support_tower_range', (600, 600))]
         self.support_towers = []
@@ -53,12 +53,12 @@ class Game:
 
         self.money = 1000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
-        self.background_img = pygame.transform.scale(self.background_img, (Constants.DIMENSIONS['game'][0], Constants.DIMENSIONS['game'][1]))
+        self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
         # self.path = createPathLayout(Constants.PATH_CORNERS)
 
-        self.width = Constants.DIMENSIONS['game'][0]
-        self.height = Constants.DIMENSIONS['game'][1]
+        self.width = GameConstants.DIMENSIONS['game'][0]
+        self.height = GameConstants.DIMENSIONS['game'][1]
 
         # Testing purposes
         self.clicks = []
@@ -89,8 +89,40 @@ class Game:
         # Dragging towers around
         self.drag_object = None
 
-        # For animating the death of a boss
-        self.boss_dies = None
+        # Logistics involving generating monster waves
+        self.current_wave = 0
+        self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+
+        # Pausing the game
+        self.pause_game = False
+
+    def spawn_enemies(self):
+        """
+        Spawns enemies based on the current wave
+        """
+        if sum(self.cur_wave_amounts):
+            ENEMY_WAVES_MONSTER_NAMES = {
+                0: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
+                1: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
+                2: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
+                3: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
+                4: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
+                5: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
+                6: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
+                7: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
+                8: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')],
+                9: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')]
+            }
+            for i, amount in enumerate(self.cur_wave_amounts):
+                if amount:
+                    self.enemies.append(ENEMY_WAVES_MONSTER_NAMES[self.current_wave][i])
+                    self.cur_wave_amounts[i] -= 1
+                    break
+        else:
+            self.current_wave += 1
+            self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+            self.pause_game = True
+            
 
     def buy_tower(self, name):
         x, y = pygame.mouse.get_pos()
@@ -108,11 +140,12 @@ class Game:
         while ongoing:
             clock.tick(80)
 
-            # Monster waves
-            if time.time() - self.timer >= 1:
-                self.timer = time.time()
-                self.enemies.append(random.choice([Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')]))
-            
+            if not self.pause_game:
+                # Monster waves
+                if time.time() - self.timer >= random.randint(1, 6) / 6:
+                    self.timer = time.time()
+                    self.spawn_enemies()
+
             # Check for objects being dragged
             pos = pygame.mouse.get_pos()    
             if self.drag_object:
@@ -140,8 +173,9 @@ class Game:
                                 self.money -= self.shop_menu.get_it_cost(main_menu_item_name)
                                 self.buy_tower(main_menu_item_name)
 
-                        self.clicks.append(pos)
-                        print(self.clicks)
+                        # self.clicks.append(pos)
+                        # print(self.clicks)
+
                         button_clicked = False
                         
                         #Currently pressing on an item on the menu
@@ -184,7 +218,7 @@ class Game:
 
             # Looping through the towers and attack enemies if any are in range
             for t in self.attack_towers:
-                self.money += t.attack(self.enemies, self.dead_enemies, self.boss_dies)
+                self.money += t.attack(self.enemies, self.dead_enemies)
 
             for t in self.support_towers:
                 t.support(self.attack_towers)
@@ -202,8 +236,8 @@ class Game:
         self.window.blit(self.background_img, (0, 0))
 
         # Testing purposes of mouse movement
-        for p in self.clicks:
-            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+        # for p in self.clicks:
+        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
 
         # Drawing towers
         for a in self.attack_towers:
@@ -216,12 +250,8 @@ class Game:
             e.draw(self.window)
         
         # Drawing animation of dead enemies
-        for dead_e in self.dead_enemies:
-            dead_e.die(self.window)
-
-        # Drawing animation of dead boss if defeated
-        if self.boss_dies:
-            self.boss_dies.die(self.window)
+        for dead_enemy in self.dead_enemies:
+            dead_enemy.die(self.window)
 
         # Draw the tower being dragged
         if self.drag_object:

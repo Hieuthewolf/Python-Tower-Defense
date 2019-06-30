@@ -1,15 +1,15 @@
 from objectFormation import GameObjects
-from constants import Constants
+from constants import GameConstants, EnemyImagesConstants
 # from usefulFunctions import createPathLayout
 import pygame
 import math
 
 class Enemy(GameObjects):
     def __init__(self, name):
-        super().__init__(name, Constants.PATH_CORNERS[0])
+        super().__init__(name, GameConstants.PATH_CORNERS[0])
         # Each enemy has access to the game path
         # self.path = createPathLayout(Constants.PATH_CORNERS)
-        self.path = Constants.PATH_CORNERS
+        self.path = GameConstants.PATH_CORNERS
 
         # Enemy coordinates
         self.x = self.coord[0]
@@ -20,30 +20,30 @@ class Enemy(GameObjects):
         # self.velocity = Constants.ENEMY_SPEED[name]
         
         # Animating/Modifying appearance of enemies
-        self.images = Constants.ENEMY_MOVING_SPRITE_IMAGES[name][:]
+        self.images = EnemyImagesConstants.ENEMY_MOVING_SPRITE_IMAGES[name][:]
         self.animation_count = 0
         self.image = None #The current image that's being shown at a specific time frame
 
         # Health
-        self.max_health = Constants.HEALTH[name]
+        self.max_health = GameConstants.HEALTH[name]
         self.health = self.max_health
 
         # Enemy crystal worth
-        self.crystal_worth = Constants.ENEMY_CRYSTALS[name]
+        self.crystal_worth = GameConstants.ENEMY_CRYSTALS[name]
 
         # Death animation
-        self.death = Constants.ENEMY_DEATH_SPRITE_IMAGES[name][:]
+        self.death = EnemyImagesConstants.ENEMY_DEATH_SPRITE_IMAGES[name][:]
         self.death_animation_count = 0
         self.dead = False
 
         # Additional constants to slow down move or death animation
-        if name in Constants.MONSTER_NAMES:
+        if name in GameConstants.MONSTER_NAMES:
             # Higher means it will take longer to go through the images
-            self.slow_down_move_animation = Constants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER['monster'] #For monsters
-            self.slow_down_death_animation = Constants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER['monster']
+            self.slow_down_move_animation = GameConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER['monster'] #For monsters
+            self.slow_down_death_animation = GameConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER['monster']
         else:
-            self.slow_down_move_animation = Constants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER[name] # For bosses
-            self.slow_down_death_animation = Constants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER[name]
+            self.slow_down_move_animation = GameConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER[name] # For bosses
+            self.slow_down_death_animation = GameConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER[name]
 
         # Flips the images based on the direction they're facing
         self.flipped = False
@@ -194,15 +194,6 @@ class BossEnemy(Enemy):
     def __init__(self, name):
         super().__init__(name)
         self.flipped = True #Flips the enemy if not facing the correct direction
-
-        # # Initially flips all boss images because they are facing the wrong direction
-        # if name in Constants.BOSS_NAMES:
-        #     if self.flipped:
-        #         for x, img in enumerate(self.death):
-        #             self.death[x] = pygame.transform.flip(img, True, False)
-        #     else:
-        #         for x, img in enumerate(self.death):
-        #             self.death[x] = pygame.transform.flip(img, True, False)
 
     def health_bar(self, window):
         """
