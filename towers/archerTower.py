@@ -45,13 +45,6 @@ class ArcherTowerFar(Tower):
         super().draw_tower_radius(window)
         super().draw(window)
 
-        if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
-            self.archer_count += 1
-            if self.archer_count >= len(self.archer_images) * 3: 
-                self.archer_count = 0
-        else:
-            self.archer_count = 0
-
         archer = self.archer_images[self.archer_count // 3] 
 
         #Padding so that the archer stays static when switching directions
@@ -78,6 +71,13 @@ class ArcherTowerFar(Tower):
             if dist < self.range:
                 self.enemy_in_range = True
                 lowest_health_enemies.append(e)
+
+        if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
+            self.archer_count += 1
+            if self.archer_count >= len(self.archer_images) * 3: 
+                self.archer_count = 0
+        else:
+            self.archer_count = 0
         
         # Sorting by horizontal distance so the archer tower knows what direction to face 
         lowest_health_enemies.sort(key = lambda e: e.health)

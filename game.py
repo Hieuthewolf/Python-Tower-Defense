@@ -18,15 +18,22 @@ from towers.archerTower import ArcherTowerFar, ArcherTowerShort
 from towers.supportTower import DamageTower, RangeTower
 
 #Importing main menu
-from menu.menu import ShopMenu
+from menu.menu import ShopMenu, GameStateButton
 
 #Game lives and money assets
 life_image = pygame.image.load(os.path.join("images/lives", "heart.png"))
 crystal_image = pygame.image.load(os.path.join("images/upgrade", "crystal_3.png"))
 pygame.init()
-game_font = pygame.font.SysFont('comicsans', 60)
+game_font = pygame.font.SysFont('comicsans', 52)
 
-#Side-bar shop menu assets
+# Pause/Play buttons
+play = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_start.png")), (60, 60))
+pause = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_pause.png")), (60, 60))
+
+# Wave indicator
+wave =  pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "wave.png")), (200, 50))
+
+# Side-bar shop menu assets
 side_bar_img = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "side_bar_img.png")), (150, 325))
 buy_archer = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "bow.png")), (60, 60))
 buy_crossbowman = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "crossbow.png")), (60, 60))
@@ -35,8 +42,6 @@ buy_support_range = pygame.transform.scale(pygame.image.load(os.path.join("image
 
 #Adding music
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-
-clock = pygame.time.Clock()
 
 class Game:
     def __init__(self):
@@ -67,7 +72,7 @@ class Game:
         self.timer = time.time()
         
         # Lives and life font
-        self.lives_font = game_font
+        self.font = game_font
         self.lives = 10
 
         # Music
@@ -94,7 +99,8 @@ class Game:
         self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
 
         # Pausing the game
-        self.pause_game = False
+        self.pause_game = True
+        self.game_state_button = GameStateButton(play, pause, 10, self.height - 70)
 
     def spawn_enemies(self):
         """
@@ -119,9 +125,11 @@ class Game:
                     self.cur_wave_amounts[i] -= 1
                     break
         else:
-            self.current_wave += 1
-            self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
-            self.pause_game = True
+            if not self.enemies:
+                self.current_wave += 1
+                self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+                self.pause_game = True
+                self.game_state_button.image = self.game_state_button.images[0]
             
 
     def buy_tower(self, name):
@@ -136,13 +144,14 @@ class Game:
 
     def run(self):
         ongoing = True
+        clock = pygame.time.Clock()
 
         while ongoing:
-            clock.tick(80)
+            clock.tick(200)
 
             if not self.pause_game:
                 # Monster waves
-                if time.time() - self.timer >= random.randint(1, 6) / 6:
+                if time.time() - self.timer >= random.randint(1, 6) / 3:
                     self.timer = time.time()
                     self.spawn_enemies()
 
@@ -166,6 +175,11 @@ class Game:
                         self.drag_object.being_dragged = False
                         self.drag_object = None
                     else:
+                        # Checking for the current state of the game (Paused or play)
+                        if self.game_state_button.click(pos[0], pos[1]):
+                            self.pause_game = not self.pause_game
+                            self.game_state_button.switch_img()
+
                         #Clicking on main menu
                         main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])
                         if main_menu_item_name: 
@@ -204,29 +218,29 @@ class Game:
                                 else:
                                     t.selected = False
 
+            if not self.pause_game:
+                # Appending to a new list enemeies that are off the screen as indicated by the e.move() return value
+                delete_enemies = []
+                for e in self.enemies:
+                    if not e.move():
+                        delete_enemies.append(e)
 
-            # Appending to a new list enemeies that are off the screen as indicated by the e.move() return value
-            delete_enemies = []
-            for e in self.enemies:
-                if not e.move():
-                    delete_enemies.append(e)
+                # Deleting enemies off the screen
+                for e in delete_enemies:
+                    self.lives -= 1
+                    self.enemies.remove(e)
 
-            # Deleting enemies off the screen
-            for e in delete_enemies:
-                self.lives -= 1
-                self.enemies.remove(e)
+                # Looping through the towers and attack enemies if any are in range
+                for t in self.attack_towers:
+                    self.money += t.attack(self.enemies, self.dead_enemies)
 
-            # Looping through the towers and attack enemies if any are in range
-            for t in self.attack_towers:
-                self.money += t.attack(self.enemies, self.dead_enemies)
+                for t in self.support_towers:
+                    t.support(self.attack_towers)
 
-            for t in self.support_towers:
-                t.support(self.attack_towers)
-
-            # Terminating Game Over condition
-            if self.lives <= 0:
-                print("Game Over")
-                ongoing = False
+                # Terminating Game Over condition
+                if self.lives <= 0:
+                    print("Game Over")
+                    ongoing = False
 
             self.draw()
 
@@ -258,23 +272,31 @@ class Game:
             self.drag_object.draw(self.window)
 
         #Drawing lives
-        life_txt = self.lives_font.render(str(self.lives), 1, (255, 255, 255))
+        life_txt = self.font.render(str(self.lives), 1, (255, 255, 255))
         life_img = pygame.transform.scale(life_image, (40, 40))
         life_start_pos = life_img.get_width()
 
-        self.window.blit(life_txt, (life_start_pos + 25, 8))
+        self.window.blit(life_txt, (life_start_pos + 25, 11))
         self.window.blit(life_img, (life_start_pos - 25, 8))
 
         #Drawing crystal currency
-        crystal_txt = self.lives_font.render(str(self.money), 1, (255, 255, 255))
+        crystal_txt = self.font.render(str(self.money), 1, (255, 255, 255))
         crystal_img = pygame.transform.scale(crystal_image, (40, 40))
         crystal_start_pos = crystal_img.get_width() 
 
-        self.window.blit(crystal_txt, (crystal_start_pos + 25, 60))
+        self.window.blit(crystal_txt, (crystal_start_pos + 25, 63))
         self.window.blit(crystal_img, (crystal_start_pos - 25, 60))
 
         #Draw menu
         self.shop_menu.draw(self.window)
+
+        #Drawing game state button
+        self.game_state_button.draw(self.window)
+
+        #Drawing the wave indicator
+        self.window.blit(wave, (self.width - wave.get_width() + 30, -10)) #Wave BG
+        wave_txt = self.font.render("Wave: " + str(self.current_wave + 1), 1, (255, 255, 255))
+        self.window.blit(wave_txt, (self.width - wave_txt.get_width() // 2 - wave.get_width() // 2 + 15, 5))
 
         pygame.display.update()
 

@@ -92,7 +92,7 @@ class WaveConstants:
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
     ENEMY_WAVES_AMOUNT = {
-        0: [35, 25, 15, 10],
+        0: [5, 5, 5, 5],
         1: [10, 35, 25, 15],
         2: [15, 10, 35, 25],
         3: [10, 15, 25, 35],

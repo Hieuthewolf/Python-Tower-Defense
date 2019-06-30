@@ -57,6 +57,20 @@ class MainButton(Button):
         self.width, self.height = self.image.get_width(), self.image.get_height()
         self.cost = cost
 
+class GameStateButton(Button):
+    def __init__(self, play_img, pause_img, x, y):
+        self.images = [play_img, pause_img]
+        self.x = x
+        self.y = y
+        self.image = self.images[0]
+        self.width, self.height = self.image.get_width(), self.image.get_height()
+
+    def switch_img(self):
+        if self.image == self.images[0]:
+            self.image = self.images[1]
+        else:
+            self.image = self.images[0]
+
 class Menu:
     """
     Menu containing all the towers and items

@@ -63,6 +63,10 @@ class Enemy(GameObjects):
         Will return true if the next coordinate is a valid coordinate in the path and false if the enemy is beyond the path goal
         :return: booleans
         """ 
+        self.animation_count += 1
+        if self.animation_count >= len(self.images) * self.slow_down_move_animation:
+            self.animation_count = 0
+        
         x1, y1 = self.path[self.currentPathPos]
         if self.currentPathPos + 1 >= len(self.path):
             return False
@@ -159,16 +163,10 @@ class Enemy(GameObjects):
         :return: None
         """
         self.image = self.images[self.animation_count // self.slow_down_move_animation]
-        self.animation_count += 1
-
-        if self.animation_count >= len(self.images) * self.slow_down_move_animation:
-            self.animation_count = 0
 
         window.blit(self.image, (self.x - self.image.get_width() / 2 + 15, (self.y - (self.image.get_height() / 2) - 10)))
 
         self.health_bar(window)
-        self.move()
-
 
     def health_bar(self, window):
         """
