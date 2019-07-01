@@ -8,7 +8,7 @@ from enemies.monster import *
 from enemies.boss import Balrog, KingSlime, Mano, Pianus, PinkBean
 
 #Importing constants
-from constants import WaveConstants, GameConstants
+from constants import WaveConstants, GameConstants, TowerConstants
 
 from objectFormation import GameObjects
 
@@ -29,8 +29,10 @@ pygame.init()
 game_font = pygame.font.SysFont('comicsans', 52)
 
 # Pause/Play buttons
-play = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_start.png")), (60, 60))
-pause = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_pause.png")), (60, 60))
+play_round = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_start.png")), (60, 60))
+pause_round = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_pause.png")), (60, 60))
+play_music = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_music.png")), (60, 60))
+pause_music = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "button_music_off.png")), (60, 60))
 
 # Wave indicator
 wave =  pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "wave.png")), (200, 50))
@@ -53,11 +55,7 @@ class Game:
         self.support_towers = []
         self.dead_enemies = set()
 
-        # Attack tower names and support tower names
-        self.att_tower_names = ["bowman", "crossbowman"]
-        self.sup_tower_names = ["support_damage", "support_range"]
-
-        self.money = 10000
+        self.money = 2000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
@@ -75,12 +73,6 @@ class Game:
         # Lives and life font
         self.font = game_font
         self.lives = 10
-
-        # Music
-        self.music = pygame.mixer.music
-        self.music.load("maple.mp3")
-        self.music.set_volume(0.7)
-        # self.music.play(-1)
 
         # Selecting tower logistics
         self.select_tower = None
@@ -102,11 +94,20 @@ class Game:
 
         # Pausing the game
         self.pause_game = True
-        self.game_state_button = GameStateButton(play, pause, self.width - play.get_width(),  wave.get_height() - 5)
+        self.game_state_button = GameStateButton(play_round, pause_round, self.width - play_round.get_width(),  wave.get_height() - 5)
 
         # Testing if the location of the tower is valid
         self.invalid_tower_placement = False
         self.mouse_object = None
+
+        # Music
+        self.music = pygame.mixer.music
+        self.music.load("maple.mp3")
+        self.music.set_volume(0.5)
+        self.music.play(-1)
+        self.play_sound = True
+        self.soundBtn = GameStateButton(play_music, pause_music, self.width - play_music.get_width() - play_round.get_width(), wave.get_height() - 5)
+        self.soundBtn.switch_img()
 
     def spawn_enemies(self):
         """
@@ -148,18 +149,17 @@ class Game:
         except Exception as error:  
             print(str(error) + "Invalid Name")
 
-    def get_mouse_coords(self, name, coord):
-        """
-        Gets the coordinates for the mouse when we are dragging a tower
-        """
-        return GameObjects(self.drag_object.name, (coord[0], coord[1])) 
-
     def run(self):
         ongoing = True
         clock = pygame.time.Clock()
 
         while ongoing:
             clock.tick(120)
+
+            if not self.play_sound:
+                self.music.pause()
+            else:
+                self.music.unpause()
 
             if not self.pause_game:
                 # Monster waves
@@ -169,7 +169,8 @@ class Game:
 
             # Check for objects being dragged
 
-            pos = pygame.mouse.get_pos()    
+            pos = pygame.mouse.get_pos()
+
             if self.drag_object:
                 self.drag_object.move(pos[0], pos[1])
                 mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
@@ -194,7 +195,7 @@ class Game:
                         continue
 
                     if self.drag_object and not self.invalid_tower_placement:
-                        if self.drag_object.name in self.att_tower_names:
+                        if self.drag_object.name in TowerConstants.ATT_TOWER_NAMES:
                             self.drag_object.coord = (pos[0], pos[1])
                             self.attack_towers.append(self.drag_object)
                         else:
@@ -213,6 +214,10 @@ class Game:
                             self.pause_game = not self.pause_game
                             self.game_state_button.switch_img()
 
+                        if self.soundBtn.click(pos[0], pos[1]):
+                            self.play_sound = not self.play_sound
+                            self.soundBtn.switch_img()
+
                         #Clicking on main menu
                         main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])  
 
@@ -223,15 +228,16 @@ class Game:
                         # self.clicks.append(pos)
                         # print(self.clicks)
 
-                        # button_clicked = False
+                        # self.tower_clicked = False
                         
                         #Currently pressing on an item on the menu
-                        if self.select_tower and t.selected:       
+                        if self.tower_clicked:   
                             self.tower_clicked = self.select_tower.menu.get_clicked_item(pos[0], pos[1])
                             tower_cost = self.select_tower.get_upgrade_cost()
                             if self.tower_clicked == "upgrade" and isinstance(tower_cost, int) and self.money >= tower_cost:
                                 self.money -= self.select_tower.get_upgrade_cost()
                                 self.select_tower.upgrade()
+                                self.tower_clicked = False
 
                         # If we're not on the menu of an item
                         if not self.tower_clicked:
@@ -240,7 +246,11 @@ class Game:
                                 if t.click(pos[0], pos[1]):
                                     t.selected = True
                                     self.select_tower = t
-                                else:
+                                    self.tower_clicked = True
+                                    break
+
+                            for t in all_towers:
+                                if not t.click(pos[0], pos[1]):
                                     t.selected = False
                                     
             if not self.pause_game:
@@ -320,8 +330,15 @@ class Game:
         #Draw menu
         self.shop_menu.draw(self.window)
 
+        #Redrawing the selected tower so that it has the highest priority
+        if self.select_tower:
+            self.select_tower.draw(self.window)
+
         #Drawing game state button
         self.game_state_button.draw(self.window)
+
+        #Drawing music button
+        self.soundBtn.draw(self.window)
 
         #Drawing the wave indicator
         self.window.blit(wave, (self.width - wave.get_width() + 30, -10)) #Wave BG

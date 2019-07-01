@@ -19,44 +19,44 @@ class GameConstants:
 
     HEALTH = {
         # Monsters
-        'monster_1': 5,
-        'monster_2': 10,
-        'monster_3': 15,
-        'monster_4': 20,
-        'monster_5': 5,
-        'monster_6': 10,
-        'monster_7': 15,
-        'monster_8': 20,
-        'monster_9': 15,
-        'monster_10': 10,
+        'monster_1': 6,
+        'monster_2': 8,
+        'monster_3': 12,
+        'monster_4': 16,
+        'monster_5': 18,
+        'monster_6': 24,
+        'monster_7': 26,
+        'monster_8': 32,
+        'monster_9': 34,
+        'monster_10': 40,
 
         # Bosses
-        'balrog': 200,
-        'king_slime': 100,
-        'mano': 500, 
-        'pianus': 1000,
-        'pink_bean': 5000
+        'balrog': 100,
+        'king_slime': 200,
+        'mano': 300, 
+        'pianus': 400,
+        'pink_bean': 500
     }
 
     ENEMY_CRYSTALS = {
         # Monsters
-        'monster_1': 1000,
-        'monster_2': 1000,
-        'monster_3': 1000,
-        'monster_4': 1000,
-        'monster_5': 1000,
-        'monster_6': 1000,
-        'monster_7': 1000,
-        'monster_8': 1000,
-        'monster_9': 1000,
-        'monster_10': 1000,
+        'monster_1': 6,
+        'monster_2': 8,
+        'monster_3': 12,
+        'monster_4': 16,
+        'monster_5': 18,
+        'monster_6': 24,
+        'monster_7': 26,
+        'monster_8': 32,
+        'monster_9': 34,
+        'monster_10': 40,
 
         # bosses
-        'mano': 5000,
-        'king_slime': 1000,
-        'balrog': 20000, 
-        'pianus': 50000,
-        'pink_bean': 100000
+        'mano': 1000,
+        'king_slime': 2000,
+        'balrog': 3000, 
+        'pianus': 4000,
+        'pink_bean': 5000
     }
 
     # The additional buffer to // by during animation count and to * by during len(images) to slow down images 
@@ -84,6 +84,7 @@ class GameConstants:
     BOSS_NAMES = ['mano', 'king_slime', 'balrog', 'pianus', 'pink_bean']
 
     PATH = [(0, 526), (62, 526), (184, 506), (235, 429), (264, 336), (353, 301), (442, 270), (472, 205), (499, 123), (564, 89), (663, 85), (776, 87), (908, 64), (1018, 75), (1125, 95), (1213, 110), (1251, 188), (1195, 267), (1114, 294), (1098, 302), (1020, 348), (1004, 441), (1077, 519), (1224, 542), (1255, 622), (1255, 665)]
+    INDIVIDUAL_PATH_COORDINATES = ()
 
 class WaveConstants:
     """
@@ -92,7 +93,7 @@ class WaveConstants:
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
     ENEMY_WAVES_AMOUNT = {
-        0: [5, 5, 5, 5],
+        0: [35, 25, 15, 10],
         1: [10, 35, 25, 15],
         2: [15, 10, 35, 25],
         3: [10, 15, 25, 35],

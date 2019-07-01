@@ -58,12 +58,12 @@ class Tower(GameObjects):
         :param window: surface
         :return: None
         """
-        tower_image = self.tower_images[self.level - 1]
-        window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
-
         #Drawing menu
         if self.selected:
             self.menu.draw(window)
+
+        tower_image = self.tower_images[self.level - 1]
+        window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
 
         if self.level_up_animation:
             window.blit(self.level_up[self.level_animation // 2], (self.x - tower_image.get_width() - 75, self.y - 225))
@@ -88,10 +88,20 @@ class Tower(GameObjects):
         :return: bool
         """
         tower_image = self.tower_images[self.level - 1]
-        if X <= self.x - tower_image.get_width() + self.width - 20 and X >= self.x - tower_image.get_width() + 20:
-            if Y  <= self.y + self.height - tower_image.get_height() - 20 and Y >= self.y - tower_image.get_height():
-                return True
-        return False
+
+        # Att tower dimensions will be different from that of support towers and magic towers
+
+        if self.name in TowerConstants.ATT_TOWER_NAMES:
+            if X <= self.x + tower_image.get_width() // 2  - 15 and X >= self.x - tower_image.get_width() // 2 + 5:
+                if Y  <= self.y + self.height - tower_image.get_height() - 25 and Y >= self.y - tower_image.get_height() + 20:
+                    return True
+            return False
+
+        elif self.name in TowerConstants.SUP_TOWER_NAMES:
+            if X <= self.x + tower_image.get_width() // 2  and X >= self.x - tower_image.get_width() // 2 :
+                if Y  <= self.y + tower_image.get_height() // 2 and Y >= self.y - tower_image.get_height() // 2:
+                    return True
+            return False
 
     def sell(self):
         """

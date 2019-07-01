@@ -18,7 +18,7 @@ class DamageTower(Tower):
     def __init__(self, name, coord):
         super().__init__(name, coord)
         self.tower_images = damage_tower[:]
-        self.increase = [0.2, 0.4, "MAX"]
+        self.increase = [0.2, 0.4, 0.6]
 
     def draw(self, window):
         super().draw_tower_radius(window)
@@ -54,7 +54,7 @@ class RangeTower(DamageTower):
     def __init__(self, name, coord):
         super().__init__(name, coord)
         self.tower_images = range_tower[:]
-        self.increase = [0.2, 0.4, "MAX"]
+        self.increase = [0.2, 0.4, 0.6]
 
     def support(self, towers):
         """

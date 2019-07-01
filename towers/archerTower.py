@@ -33,7 +33,7 @@ class ArcherTowerFar(Tower):
         self.base_range = self.range
 
         # Archer damage that gets updated
-        self.base_damage = 2000
+        self.base_damage = 3
         self.damage = self.base_damage
 
         # Counter to sync up the last arrow with the monster dying
@@ -127,7 +127,7 @@ class ArcherTowerShort(ArcherTowerFar):
         self.archer_images = archers_short[:]
 
         # Damage
-        self.base_damage = 2
+        self.base_damage = 5
         self.damage = self.base_damage
 
 

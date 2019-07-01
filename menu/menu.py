@@ -20,9 +20,9 @@ class Button:
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
         if self.menu.tower_name in TowerConstants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] - 10
         else:
-            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 20
 
     def click(self, X, Y):
         """
@@ -31,8 +31,8 @@ class Button:
         @param Y: int
         :return: boolean
         """
-        if X <= self.x + self.width and X >= self.x:
-            if Y <= self.y + self.height and Y >= self.y:
+        if X <= self.x + self.width - 10 and X >= self.x + 10 :
+            if Y <= self.y + self.height - 10 and Y >= self.y + 10:
                 return True
         return False
 
@@ -41,9 +41,9 @@ class Button:
 
         # The vertical displacement distance varies if its att or sup tower b/c of added height of archers
         if self.menu.tower_name in TowerConstants.SUP_TOWER_NAMES:
-            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['supp_tower'][1] - 10
         else:
-            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 10
+            self.y = self.menu.y - GameConstants.DIMENSIONS['att_tower'][1] + 20
 
     def draw(self, window):
         window.blit(self.image, (self.x, self.y))
@@ -141,13 +141,18 @@ class Menu:
         @param window: surface
         :return: None
         """
-        window.blit(self.menu_background, (self.x - self.menu_background.get_width() / 2, self.y - self.tower_height))
+        if self.tower_name in TowerConstants.ATT_TOWER_NAMES:
+            window.blit(self.menu_background, (self.x - self.menu_background.get_width() / 2, self.y - self.tower_height + 10))
+        elif self.tower_name in TowerConstants.SUP_TOWER_NAMES:
+            window.blit(self.menu_background, (self.x - self.menu_background.get_width() / 2, self.y - self.tower_height - 20))
+
         for it in self.buttons:
             it.draw(window)
-            window.blit(upgrade_crystal, (it.x + it.width + 5, it.y - 6)) #Positioning of the star
-
+            window.blit(upgrade_crystal, (it.x + it.width + 5, it.y - 4)) #Positioning of the star
             txt = self.font.render(str(self.tower_cost[self.tower_level - 1]), 1, (255, 255, 255))
             window.blit(txt, (it.x + it.width + 30 - txt.get_width() / 2, it.y + upgrade_crystal.get_height() - 5))
+
+
 
 class ShopMenu(Menu):
     """
