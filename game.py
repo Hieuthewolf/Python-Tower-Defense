@@ -12,12 +12,10 @@ from constants import WaveConstants, GameConstants, TowerConstants
 
 from objectFormation import GameObjects
 
-# #Importing useful functions
-# from usefulFunctions import createPathLayout
-
 #Importing Towers
 from towers.archerTower import ArcherTowerFar, ArcherTowerShort
 from towers.supportTower import DamageTower, RangeTower
+from towers.magicTower import FireMagicTower
 
 #Importing main menu
 from menu.menu import ShopMenu, GameStateButton
@@ -43,6 +41,8 @@ buy_archer = pygame.transform.scale(pygame.image.load(os.path.join("images/shop"
 buy_crossbowman = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "crossbow.png")), (60, 60))
 buy_support_dmg = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "damage_tower.png")), (60, 60))
 buy_support_range = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "range_tower.png")), (60, 60))
+buy_magic_fire = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "fire.png")), (60, 60))
+buy_magic_ice = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "ice.png")), (60, 60))
 
 #Adding music
 pygame.mixer.pre_init(44100, 16, 2, 4096)
@@ -54,6 +54,7 @@ class Game:
         # Tower variables
         self.attack_towers = []
         self.support_towers = []
+        self.magic_towers = [FireMagicTower('fire', (500, 500))]
 
         #Enemy variables
         self.dead_enemies = set()
@@ -91,6 +92,8 @@ class Game:
         self.shop_menu.add_button("crossbowman", buy_crossbowman, 600)
         self.shop_menu.add_button("support_damage", buy_support_dmg, 800)
         self.shop_menu.add_button("support_range", buy_support_range, 1250)
+        self.shop_menu.add_button("magic_fire", buy_magic_fire, 1500)
+        self.shop_menu.add_button("magic_ice", buy_magic_ice, 2000)
 
         # Dragging the tower from the shop to a location
         self.drag_object = None
@@ -246,8 +249,6 @@ class Game:
                       
                         # self.clicks.append(pos)
                         # print(self.clicks)
-
-                        # self.tower_clicked = False
                         
                         #Currently pressing on an item on the menu
                         if self.tower_clicked:   
@@ -320,6 +321,8 @@ class Game:
             a.draw(self.window)
         for s in self.support_towers:
             s.draw(self.window)
+        for m in self.magic_towers:
+            m.draw(self.window)
 
         # Drawing enemies
         for e in self.enemies:
@@ -373,8 +376,6 @@ class Game:
         self.window.blit(wave_txt, (self.width - wave_txt.get_width() // 2 - wave.get_width() // 2 + 15, 5))
 
         pygame.display.update()
-
-    
 
 g = Game()
 g.run()

@@ -177,11 +177,15 @@ class ShopMenu(Menu):
         @param image: surface
         :return: None
         """
-        x_btn_coord = ((self.item_count) % 2) * self.x + 5
+        if self.item_count % 2 == 0 and self.item_count != 0:
+            self.start_new_line += 1
+
         self.item_count += 1
 
-        if self.item_count % 3 == 0:
-            self.start_new_line += 1
+        if self.item_count % 2 == 0:
+            x_btn_coord = self.x - self.width // 2 + 15
+        else:
+            x_btn_coord = self.x + 10
 
         y_btn_coord = self.y + 15 + self.start_new_line * 100
         self.buttons.append(MainButton(name, image, x_btn_coord, y_btn_coord, cost))
@@ -196,9 +200,9 @@ class ShopMenu(Menu):
         window.blit(self.menu_background, (self.x - self.width / 2, self.y))
         for it in self.buttons:
             it.draw(window)
-            window.blit(smaller_upgrade_crystal, (it.x + 5, it.y + it.height + 5)) #Positioning of the star
+            window.blit(smaller_upgrade_crystal, (it.x + 2, it.y + it.height + 5)) #Positioning of the star
             txt = self.font.render(str(it.cost), 1, (255, 255, 255))
-            window.blit(txt, (it.x + smaller_upgrade_crystal.get_width() + 8, it.y + it.height + 5))
+            window.blit(txt, (it.x + smaller_upgrade_crystal.get_width() + 5, it.y + it.height + 5))
 
             
 

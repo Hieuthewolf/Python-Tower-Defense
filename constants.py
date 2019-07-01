@@ -14,6 +14,7 @@ class GameConstants:
         'boss': (150, 150),
         'att_tower': (135, 135),
         'supp_tower': (80, 80),
+        'magic_tower': (120, 120),
         'menu': (130, 70),
     }
 
@@ -83,7 +84,7 @@ class GameConstants:
     MONSTER_NAMES = ['monster_1', 'monster_2', 'monster_3', 'monster_4', 'monster_5', 'monster_6', 'monster_7', 'monster_8', 'monster_9', 'monster_10']
     BOSS_NAMES = ['mano', 'king_slime', 'balrog', 'pianus', 'pink_bean']
 
-    PATH = [(0, 526), (62, 526), (184, 506), (235, 429), (264, 336), (353, 301), (442, 270), (472, 205), (499, 123), (564, 89), (663, 85), (776, 87), (908, 64), (1018, 75), (1125, 95), (1213, 110), (1251, 188), (1195, 267), (1114, 294), (1098, 302), (1020, 348), (1004, 441), (1077, 519), (1224, 542), (1255, 622), (1255, 665)]
+    PATH = [(0, 531), (50, 531), (136, 518), (195, 496), (232, 424), (263, 349), (358, 312), (438, 285), (475, 217), (499, 133), (581, 101), (664, 101), (733, 94), (822, 83), (889, 72), (984, 80), (1075, 88), (1175, 94), (1235, 154), (1264, 228), (1184, 286), (1094, 310), (1035, 361), (1011, 435), (1065, 486), (1136, 507), (1219, 550), (1252, 639), (1260, 677)]
     INDIVIDUAL_PATH_COORDINATES = ()
 
 class WaveConstants:
@@ -192,16 +193,20 @@ class TowerConstants:
         'bowman': 200,
         'crossbowman': 150,
         'support_damage': 150,
-        'support_range': 150
+        'support_range': 150,
+        'fire': 250
     }
 
     UPGRADE_COST = {
         'bowman': [2750, 5500, "MAX"],
         'crossbowman': [1000, 5000, "MAX"],
         'support_damage': [350, 900, "MAX"],
-        'support_range': [500, 1250, "MAX"]
+        'support_range': [500, 1250, "MAX"],
+        'fire': [500, 1250, "MAX"],
+        'ice': [500, 1250, "MAX"],
     }
 
     # Names of attack and support towers 
     ATT_TOWER_NAMES = ['bowman', 'crossbowman']
     SUP_TOWER_NAMES = ['support_damage', 'support_range']
+    MAGIC_TOWER_NAMES = ['fire', 'ice']
