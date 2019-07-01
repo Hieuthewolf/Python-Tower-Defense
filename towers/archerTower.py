@@ -3,6 +3,7 @@ from .tower import Tower
 import os
 import math
 from usefulFunctions import import_images_numbers
+from constants import GameConstants
 
 # <-------------------------------------------- ARCHER TOWER FAR  -------------------------------------------------->
 
@@ -95,6 +96,7 @@ class ArcherTowerFar(Tower):
                     target.dead = True
                     dead_enemies.add(target)
                     enemies.remove(target)
+
                     self.last_arrow_animation_count = 0
                     return target.crystal_worth
 

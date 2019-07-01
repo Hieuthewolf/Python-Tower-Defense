@@ -1,4 +1,5 @@
 from constants import GameConstants, TowerConstants
+import math
 
 def distance(a, b):
     """Returns the Euclidian distance between the two tuple coordinates."""
@@ -24,18 +25,11 @@ class GameObjects:
         abs_xDist = abs(other_object.coord[0] - self.coord[0])
         abs_yDist = abs(other_object.coord[1] - self.coord[1])
 
-        if other_object.name in TowerConstants.ATT_TOWER_NAMES or TowerConstants.SUP_TOWER_NAMES:
-            space_requiredX = GameConstants.DIMENSIONS['supp_tower'][0] + 12
-            if other_object.name in TowerConstants.ATT_TOWER_NAMES:
-                space_requiredY = GameConstants.DIMENSIONS['supp_tower'][1] 
-            else:
-                space_requiredX = GameConstants.DIMENSIONS['att_tower'][1]
-        else:
-            space_requiredX = (other_object.dimensions[0] // 2) 
-            space_requiredY = (other_object.dimensions[1] // 2) 
-        
-        return abs_xDist < space_requiredX and abs_yDist < space_requiredY
+        radial_dist = math.sqrt((abs_xDist ** 2) + (abs_yDist ** 2))
 
+        if radial_dist < 95:
+            return True
+        return False
 
     def distance(self, other_object):
         return distance(self.coord, other_object.coord)

@@ -50,12 +50,19 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 class Game:
     def __init__(self):
         self.window = pygame.display.set_mode((GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
-        self.enemies = []
+
+        # Tower variables
         self.attack_towers = []
         self.support_towers = []
-        self.dead_enemies = set()
 
-        self.money = 2000
+        #Enemy variables
+        self.dead_enemies = set()
+        self.enemies = []
+        self.all_bosses = [Mano("mano"), KingSlime("king_slime"), Balrog("balrog"), Pianus('pianus'), PinkBean('pink_bean')]
+        self.boss = True
+        self.next_round_after_boss = False
+
+        self.money = 200000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
@@ -113,6 +120,7 @@ class Game:
         """
         Spawns enemies based on the current wave
         """
+
         if sum(self.cur_wave_amounts):
             ENEMY_WAVES_MONSTER_NAMES = {
                 0: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
@@ -124,7 +132,8 @@ class Game:
                 6: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
                 7: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
                 8: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')],
-                9: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')]
+                9: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')],
+                10: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')]
             }
             for i, amount in enumerate(self.cur_wave_amounts):
                 if amount:
@@ -137,7 +146,7 @@ class Game:
                 self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
                 self.pause_game = True
                 self.game_state_button.image = self.game_state_button.images[0]
-            
+                self.dead_enemies = set()
 
     def buy_tower(self, name):
         x, y = pygame.mouse.get_pos()
@@ -162,10 +171,20 @@ class Game:
                 self.music.unpause()
 
             if not self.pause_game:
-                # Monster waves
-                if time.time() - self.timer >= random.randint(1, 6) / 3:
-                    self.timer = time.time()
-                    self.spawn_enemies()
+                # Boss waves
+                if self.current_wave != 0 and self.current_wave % 2 == 0:
+                    if not self.enemies and not self.next_round_after_boss:
+                        self.enemies.append(self.all_bosses[(self.current_wave // 2) - 1])
+                    # self.boss = False
+                
+                if self.current_wave == 0 or self.current_wave % 2 != 0 or self.next_round_after_boss:
+                    # Monster waves
+                    if time.time() - self.timer >= random.randint(1, 6) / 3:
+                        self.timer = time.time()
+                        self.spawn_enemies()
+
+                if self.current_wave % 2 != 0:
+                    self.next_round_after_boss = False
 
             # Check for objects being dragged
 
@@ -262,12 +281,20 @@ class Game:
 
                 # Deleting enemies off the screen
                 for e in delete_enemies:
-                    self.lives -= 1
+                    if e.name in GameConstants.BOSS_NAMES:
+                        self.lives -= 5
+                        self.next_round_after_boss = True
+                    else:
+                        self.lives -= 1
                     self.enemies.remove(e)
 
                 # Looping through the towers and attack enemies if any are in range
                 for t in self.attack_towers:
                     self.money += t.attack(self.enemies, self.dead_enemies)
+
+                for e in self.dead_enemies:
+                    if e.name in GameConstants.BOSS_NAMES:
+                        self.next_round_after_boss = True
 
                 for t in self.support_towers:
                     t.support(self.attack_towers)
