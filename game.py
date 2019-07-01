@@ -10,6 +10,8 @@ from enemies.boss import Balrog, KingSlime, Mano, Pianus, PinkBean
 #Importing constants
 from constants import WaveConstants, GameConstants
 
+from objectFormation import GameObjects
+
 # #Importing useful functions
 # from usefulFunctions import createPathLayout
 
@@ -56,7 +58,7 @@ class Game:
         self.att_tower_names = ["bowman", "crossbowman"]
         self.sup_tower_names = ["support_damage", "support_range"]
 
-        self.money = 1000
+        self.money = 10000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
@@ -79,7 +81,7 @@ class Game:
         self.music = pygame.mixer.music
         self.music.load("maple.mp3")
         self.music.set_volume(0.7)
-        self.music.play(-1)
+        # self.music.play(-1)
 
         # Selecting tower logistics
         self.select_tower = None
@@ -91,7 +93,10 @@ class Game:
         self.shop_menu.add_button("support_damage", buy_support_dmg, 800)
         self.shop_menu.add_button("support_range", buy_support_range, 1250)
 
-        # Dragging towers around
+        # Mouse logistics with shop
+        self.clickedOnItemOnce = False
+
+        # Dragging the tower from the shop to a location
         self.drag_object = None
 
         # Logistics involving generating monster waves
@@ -100,7 +105,11 @@ class Game:
 
         # Pausing the game
         self.pause_game = True
-        self.game_state_button = GameStateButton(play, pause, 10, self.height - 70)
+        self.game_state_button = GameStateButton(play, pause, self.width - play.get_width(),  wave.get_height() - 5)
+
+        # Testing if the location of the tower is valid
+        self.invalid_tower_placement = False
+        self.mouse_object = None
 
     def spawn_enemies(self):
         """
@@ -142,6 +151,12 @@ class Game:
         except Exception as error:  
             print(str(error) + "Invalid Name")
 
+    def get_mouse_coords(self, name, coord):
+        """
+        Gets the coordinates for the mouse when we are dragging a tower
+        """
+        return GameObjects(self.drag_object.name, (coord[0], coord[1])) 
+
     def run(self):
         ongoing = True
         clock = pygame.time.Clock()
@@ -156,37 +171,63 @@ class Game:
                     self.spawn_enemies()
 
             # Check for objects being dragged
+
             pos = pygame.mouse.get_pos()    
             if self.drag_object:
                 self.drag_object.move(pos[0], pos[1])
+                mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
+
+                for tower in self.attack_towers:
+                    if mouse_obj.does_collides(tower):
+                        self.invalid_tower_placement = (tower, (tower.x, tower.y))
+                        break
+                    else:
+                        self.invalid_tower_placement = None
+
+                for tower in self.support_towers:
+                    if mouse_obj.does_collides(tower):
+                        self.invalid_tower_placement = (tower, (tower.x, tower.y))
+                        break
+                    else:
+                        self.invalid_tower_placement = None
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     ongoing = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONUP:
                     # If dragging an item and then clicking on a spot
-                    if self.drag_object:
+                    if self.drag_object and self.shop_menu.get_clicked_item(pos[0], pos[1]):
+                        self.drag_object = None
+                        continue
+
+                    if self.drag_object and not self.invalid_tower_placement:
                         if self.drag_object.name in self.att_tower_names:
+                            self.drag_object.coord = (pos[0], pos[1])
                             self.attack_towers.append(self.drag_object)
                         else:
+                            self.drag_object.coord = (pos[0], pos[1])
                             self.support_towers.append(self.drag_object)
+
+                        if self.money >= self.shop_menu.get_it_cost(self.drag_object.name):
+                            self.money -= self.shop_menu.get_it_cost(self.drag_object.name)
 
                         self.drag_object.being_dragged = False
                         self.drag_object = None
-                    else:
+
+                    elif not self.drag_object:
                         # Checking for the current state of the game (Paused or play)
                         if self.game_state_button.click(pos[0], pos[1]):
                             self.pause_game = not self.pause_game
                             self.game_state_button.switch_img()
 
                         #Clicking on main menu
-                        main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])
-                        if main_menu_item_name: 
-                            if self.money >= self.shop_menu.get_it_cost(main_menu_item_name):
-                                self.money -= self.shop_menu.get_it_cost(main_menu_item_name)
-                                self.buy_tower(main_menu_item_name)
+                        main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])  
 
+                        if main_menu_item_name : 
+                            if self.money >= self.shop_menu.get_it_cost(main_menu_item_name):
+                                self.buy_tower(main_menu_item_name)
+                      
                         # self.clicks.append(pos)
                         # print(self.clicks)
 
@@ -266,6 +307,11 @@ class Game:
         # Drawing animation of dead enemies
         for dead_enemy in self.dead_enemies:
             dead_enemy.die(self.window)
+
+        if self.invalid_tower_placement:
+            s = pygame.Surface((60 * 5, 60 * 5), pygame.SRCALPHA, 32)
+            pygame.draw.circle(s, (224, 94, 94, 100), (60, 60), 60, 0)
+            self.window.blit(s, (self.invalid_tower_placement[1][0] - 60, self.invalid_tower_placement[1][1] - 60))
 
         # Draw the tower being dragged
         if self.drag_object:

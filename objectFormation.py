@@ -24,11 +24,11 @@ class GameObjects:
         abs_xDist = abs(other_object.coord[0] - self.coord[0])
         abs_yDist = abs(other_object.coord[1] - self.coord[1])
 
-        space_requiredX = (other_object.dimensions[0] + self.dimensions[0]) // 2
-        space_requiredY = (other_object.dimensions[1] + self.dimensions[1]) // 2
-
+        space_requiredX = (other_object.dimensions[0] // 2) + 15
+        space_requiredY = (other_object.dimensions[1] // 2) + 15
+        
         return abs_xDist < space_requiredX and abs_yDist < space_requiredY
-    
+
 
     def distance(self, other_object):
         return distance(self.coord, other_object.coord)

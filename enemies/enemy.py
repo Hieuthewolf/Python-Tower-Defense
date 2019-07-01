@@ -6,10 +6,10 @@ import math
 
 class Enemy(GameObjects):
     def __init__(self, name):
-        super().__init__(name, GameConstants.PATH_CORNERS[0])
+        super().__init__(name, GameConstants.PATH[0])
         # Each enemy has access to the game path
         # self.path = createPathLayout(Constants.PATH_CORNERS)
-        self.path = GameConstants.PATH_CORNERS
+        self.path = GameConstants.PATH
 
         # Enemy coordinates
         self.x = self.coord[0]
