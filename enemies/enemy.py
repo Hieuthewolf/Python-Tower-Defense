@@ -73,9 +73,9 @@ class Enemy(GameObjects):
         else:
             x2, y2 = self.path[self.currentPathPos + 1]
 
-        direction = ((x2 - x1), (y2 - y1))
-        length = math.sqrt((direction[0]) ** 2 + (direction[1]) ** 2)
-        direction = (direction[0] / length, direction[1] / length)
+        vector = ((x2 - x1), (y2 - y1))
+        length = math.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)
+        direction = (2 * vector[0] / length,  2 * vector[1] / length)
 
         if direction[0] < 0 and not self.flipped:
             self.flipped = True
@@ -115,46 +115,7 @@ class Enemy(GameObjects):
                 if self.x <= x2 and self.y >= y2:
                     self.currentPathPos += 1
 
-        # if direction[0] >= 0:
-        #     if direction[1] >= 0:
-        #         if self.x >= x2 and self.y >= y2:
-        #             self.currentPathPos += 1
-        #     else:
-        #         if self.x >= x2 and self.y <= y2:
-        #             self.currentPathPos += 1
-
-        # else:
-        #     if direction[1] >= 0:
-        #         if self.x >= x2 and self.y >= y2:
-        #             self.currentPathPos += 1
-        #     else:
-        #         if self.x <= x2 and self.y <= y2:
-        #             self.currentPathPos += 1
-
-
         return True
-
-        # self.currentPathPos += self.velocity
-        # if self.currentPathPos >= len(self.path):
-        #     return False
-        # else:
-        #     self.coord = self.path[self.currentPathPos].coord
-        #     self.x = self.coord[0]
-        #     self.y = self.coord[1]
-
-        #     # --> Character now facing right
-        #     if self.x - self.path[self.currentPathPos + 1].coord[0] > 0 and not (self.flipped):
-        #         self.flipped = True
-        #         for i, image in enumerate(self.images):
-        #             self.images[i] = pygame.transform.flip(image, True, False)
-            
-        #     # --> Character now facing left
-        #     elif self.x - self.path[self.currentPathPos + 1].coord[0] < 0 and (self.flipped):
-        #         self.flipped = False
-        #         for i, image in enumerate(self.images):
-        #             self.images[i] = pygame.transform.flip(image, True, False)
-
-        #     return True
 
     def draw(self, window):
         """

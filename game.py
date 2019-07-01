@@ -48,9 +48,8 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 class Game:
     def __init__(self):
         self.window = pygame.display.set_mode((GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
-        self.enemies = [PinkBean('pink_bean')]
+        self.enemies = []
         self.attack_towers = []
-        # self.support_towers = [DamageTower('support_tower_damage', (436, 527)), RangeTower('support_tower_range', (600, 600))]
         self.support_towers = []
         self.dead_enemies = set()
 
@@ -85,6 +84,7 @@ class Game:
 
         # Selecting tower logistics
         self.select_tower = None
+        self.tower_clicked = None
 
         # Adding items to the shop
         self.shop_menu = ShopMenu(side_bar_img.get_width() // 2 - 10, 115, side_bar_img)
@@ -92,9 +92,6 @@ class Game:
         self.shop_menu.add_button("crossbowman", buy_crossbowman, 600)
         self.shop_menu.add_button("support_damage", buy_support_dmg, 800)
         self.shop_menu.add_button("support_range", buy_support_range, 1250)
-
-        # Mouse logistics with shop
-        self.clickedOnItemOnce = False
 
         # Dragging the tower from the shop to a location
         self.drag_object = None
@@ -162,7 +159,7 @@ class Game:
         clock = pygame.time.Clock()
 
         while ongoing:
-            clock.tick(200)
+            clock.tick(120)
 
             if not self.pause_game:
                 # Monster waves
@@ -177,14 +174,9 @@ class Game:
                 self.drag_object.move(pos[0], pos[1])
                 mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
 
-                for tower in self.attack_towers:
-                    if mouse_obj.does_collides(tower):
-                        self.invalid_tower_placement = (tower, (tower.x, tower.y))
-                        break
-                    else:
-                        self.invalid_tower_placement = None
+                all_towers = self.attack_towers[:] + self.support_towers[:]
 
-                for tower in self.support_towers:
+                for tower in all_towers:
                     if mouse_obj.does_collides(tower):
                         self.invalid_tower_placement = (tower, (tower.x, tower.y))
                         break
@@ -231,34 +223,26 @@ class Game:
                         # self.clicks.append(pos)
                         # print(self.clicks)
 
-                        button_clicked = False
+                        # button_clicked = False
                         
                         #Currently pressing on an item on the menu
-                        if self.select_tower:       
-                            button_clicked = self.select_tower.menu.get_clicked_item(pos[0], pos[1])
-                            if button_clicked:
-                                if button_clicked == "upgrade":
-                                    if self.select_tower.get_upgrade_cost() != "MAX":
-                                        if self.money >= self.select_tower.get_upgrade_cost():
-                                            self.money -= self.select_tower.get_upgrade_cost()
-                                            self.select_tower.upgrade()
+                        if self.select_tower and t.selected:       
+                            self.tower_clicked = self.select_tower.menu.get_clicked_item(pos[0], pos[1])
+                            tower_cost = self.select_tower.get_upgrade_cost()
+                            if self.tower_clicked == "upgrade" and isinstance(tower_cost, int) and self.money >= tower_cost:
+                                self.money -= self.select_tower.get_upgrade_cost()
+                                self.select_tower.upgrade()
 
                         # If we're not on the menu of an item
-                        if not button_clicked:
-                            for t in self.attack_towers:
+                        if not self.tower_clicked:
+                            all_towers = self.attack_towers[:] + self.support_towers[:]
+                            for t in all_towers:
                                 if t.click(pos[0], pos[1]):
                                     t.selected = True
                                     self.select_tower = t
                                 else:
                                     t.selected = False
-
-                            for t in self.support_towers:
-                                if t.click(pos[0], pos[1]):
-                                    t.selected = True
-                                    self.select_tower = t
-                                else:
-                                    t.selected = False
-
+                                    
             if not self.pause_game:
                 # Appending to a new list enemeies that are off the screen as indicated by the e.move() return value
                 delete_enemies = []

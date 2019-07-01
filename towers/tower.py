@@ -88,8 +88,8 @@ class Tower(GameObjects):
         :return: bool
         """
         tower_image = self.tower_images[self.level - 1]
-        if X <= self.x - tower_image.get_width() // 2 + self.width and X >= self.x - tower_image.get_width() // 2:
-            if Y  <= self.y + self.height - tower_image.get_height() // 2 and Y >= self.y - tower_image.get_height() // 2:
+        if X <= self.x - tower_image.get_width() + self.width - 20 and X >= self.x - tower_image.get_width() + 20:
+            if Y  <= self.y + self.height - tower_image.get_height() - 20 and Y >= self.y - tower_image.get_height():
                 return True
         return False
 
