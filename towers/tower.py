@@ -5,8 +5,10 @@ from menu.menu import Menu
 import pygame
 import os
 
-menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "menu.png")), (130 , 70))
-upgrade_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "upgrade.png")), (55 , 55))
+menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "menu.png")), (145 , 90))
+upgrade_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "upgrade.png")), (55, 55))
+sell_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "undo.png")), (55, 55))
+
 level_up = import_images_numbers("images/level_up/", 1, 25, (300, 300))
 
 class Tower(GameObjects):
@@ -15,13 +17,16 @@ class Tower(GameObjects):
         # Tower coordinates
         self.x = self.coord[0]
         self.y = self.coord[1]
-
-        # Characteristics
-        self.sell_price = [0, 0, 0]
+        
+        # Allows for upgrade references
         self.level = 1
 
-        # Cost
+        # Upgrade Cost
         self.cost = TowerConstants.UPGRADE_COST[name]
+
+        # Selling logistics
+        self.original_price = TowerConstants.ORIGINAL_PRICE[name]
+        self.sell_price = [self.original_price, self.cost[0], self.cost[1]]
 
         # Tower dimensions
         self.width = self.dimensions[0]
@@ -44,6 +49,7 @@ class Tower(GameObjects):
         # Menu logistics
         self.menu = Menu(self, menu_background)
         self.menu.add_button("upgrade", upgrade_button)
+        self.menu.add_button("sell", sell_button)
 
         # Damage for towers that deal damage
         self.base_damage = 0
@@ -103,12 +109,12 @@ class Tower(GameObjects):
                     return True
             return False
 
-    def sell(self):
+    def get_sell_cost(self):
         """
         Sells the tower once it has been placed down and return the selling price
         :return: int
         """
-        return self.sell_price[self.level - 1]
+        return round(0.75 * self.sell_price[self.level - 1])
 
     def upgrade(self):
         """

@@ -5,9 +5,9 @@ import pygame
 
 # <-------------------------------------------- FIRE MAGIC TOWER  -------------------------------------------------->
 
-fire_magic_tower = import_images_numbers("images/towers/magic_towers/fire/", 16, 19, (120, 120))
+fire_magic_tower = import_images_numbers("images/towers/magic_towers/fire/", 16, 19, (80, 80))
 
-small_ball = pygame.transform.scale(pygame.image.load(os.path.join("images/towers/magic_towers/fire", "small_ball.png")), (30, 30))
+small_ball = pygame.transform.scale(pygame.image.load(os.path.join("images/towers/magic_towers/fire", "small_ball.png")), (20, 20))
 
 class FireMagicTower(Tower):
     def __init__(self, name, coord):

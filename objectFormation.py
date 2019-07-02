@@ -1,4 +1,4 @@
-from constants import GameConstants, TowerConstants
+from constants import GameConstants, EnemyConstants, TowerConstants
 import math
 
 def distance(a, b):
@@ -12,7 +12,7 @@ class GameObjects:
         self.coord = coord
 
         #self.dimensions[0] = width; self.dimensions[1] = height
-        if name in GameConstants.MONSTER_NAMES:
+        if name in EnemyConstants.MONSTER_NAMES:
             self.dimensions = GameConstants.DIMENSIONS['monster'] #monsters
         elif name in TowerConstants.ATT_TOWER_NAMES:
             self.dimensions = GameConstants.DIMENSIONS['att_tower'] #attack tower

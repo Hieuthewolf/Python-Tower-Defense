@@ -3,13 +3,15 @@ import os
 import time
 import random
 
+#Initializing pygame
+pygame.init()
+
 #Importing enemies
 from enemies.monster import *
 from enemies.boss import Balrog, KingSlime, Mano, Pianus, PinkBean
 
 #Importing constants
-from constants import WaveConstants, GameConstants, TowerConstants
-
+from constants import EnemyConstants, GameConstants, TowerConstants
 from objectFormation import GameObjects
 
 #Importing Towers
@@ -23,7 +25,6 @@ from menu.menu import ShopMenu, GameStateButton
 #Game lives and money assets
 life_image = pygame.image.load(os.path.join("images/lives", "heart.png"))
 crystal_image = pygame.image.load(os.path.join("images/upgrade", "crystal_3.png"))
-pygame.init()
 game_font = pygame.font.SysFont('comicsans', 52)
 
 # Pause/Play buttons
@@ -83,7 +84,7 @@ class Game:
         self.lives = 10
 
         # Selecting tower logistics
-        self.select_tower = None
+        self.tower_selected = None
         self.tower_clicked = None
 
         # Adding items to the shop
@@ -100,7 +101,7 @@ class Game:
 
         # Logistics involving generating monster waves
         self.current_wave = 0
-        self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+        self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
 
         # Pausing the game
         self.pause_game = True
@@ -146,7 +147,7 @@ class Game:
         else:
             if not self.enemies:
                 self.current_wave += 1
-                self.cur_wave_amounts = WaveConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+                self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
                 self.pause_game = True
                 self.game_state_button.image = self.game_state_button.images[0]
                 self.dead_enemies = set()
@@ -252,12 +253,26 @@ class Game:
                         
                         #Currently pressing on an item on the menu
                         if self.tower_clicked:   
-                            self.tower_clicked = self.select_tower.menu.get_clicked_item(pos[0], pos[1])
-                            tower_cost = self.select_tower.get_upgrade_cost()
+                            self.tower_clicked = self.tower_selected.menu.get_clicked_item(pos[0], pos[1])
+                            tower_cost = self.tower_selected.get_upgrade_cost()
+
                             if self.tower_clicked == "upgrade" and isinstance(tower_cost, int) and self.money >= tower_cost:
-                                self.money -= self.select_tower.get_upgrade_cost()
-                                self.select_tower.upgrade()
-                                self.tower_clicked = False
+                                self.money -= self.tower_selected.get_upgrade_cost()
+                                self.tower_selected.upgrade()
+
+                            if self.tower_clicked == "sell":
+                                self.money += self.tower_selected.get_sell_cost()
+                                if self.tower_selected.name in TowerConstants.ATT_TOWER_NAMES: #Remove from att towers
+                                    self.attack_towers.remove(self.tower_selected)
+                                elif self.tower_selected.name in TowerConstants.SUP_TOWER_NAMES: #Remove from supp towers
+                                    self.support_towers.remove(self.tower_selected)
+                                else: #Remove from magic towers
+                                    self.magic_towers.remove(self.tower_selected)
+
+                                self.tower_selected = None
+                 
+                            self.tower_clicked = False
+                            
 
                         # If we're not on the menu of an item
                         if not self.tower_clicked:
@@ -265,7 +280,7 @@ class Game:
                             for t in all_towers:
                                 if t.click(pos[0], pos[1]):
                                     t.selected = True
-                                    self.select_tower = t
+                                    self.tower_selected = t
                                     self.tower_clicked = True
                                     break
 
@@ -282,7 +297,7 @@ class Game:
 
                 # Deleting enemies off the screen
                 for e in delete_enemies:
-                    if e.name in GameConstants.BOSS_NAMES:
+                    if e.name in EnemyConstants.BOSS_NAMES:
                         self.lives -= 5
                         self.next_round_after_boss = True
                     else:
@@ -294,7 +309,7 @@ class Game:
                     self.money += t.attack(self.enemies, self.dead_enemies)
 
                 for e in self.dead_enemies:
-                    if e.name in GameConstants.BOSS_NAMES:
+                    if e.name in EnemyConstants.BOSS_NAMES:
                         self.next_round_after_boss = True
 
                 for t in self.support_towers:
@@ -361,8 +376,8 @@ class Game:
         self.shop_menu.draw(self.window)
 
         #Redrawing the selected tower so that it has the highest priority
-        if self.select_tower:
-            self.select_tower.draw(self.window)
+        if self.tower_selected:
+            self.tower_selected.draw(self.window)
 
         #Drawing game state button
         self.game_state_button.draw(self.window)

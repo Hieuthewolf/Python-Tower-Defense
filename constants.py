@@ -12,11 +12,43 @@ class GameConstants:
         'path': (35, 35),
         'monster': (80, 80),
         'boss': (150, 150),
-        'att_tower': (135, 135),
-        'supp_tower': (80, 80),
-        'magic_tower': (120, 120),
+        'att_tower': (80, 145), # The additional height is due to the archer on top and extra padding for menu
+        'supp_tower': (80, 105), # The additional height helps to pad the popup menu (give or take 25)
+        'magic_tower': (80, 125), # The additional height is due to the orb classifier on top and extra padding for menu
         'menu': (130, 70),
     }
+
+    # Names of monsters and bosses in the waves
+    PATH = [(0, 531), (50, 531), (136, 518), (195, 496), (232, 424), (263, 349), (358, 312), (438, 285), (475, 217), (499, 133), (581, 101), (664, 101), (733, 94), (822, 83), (889, 72), (984, 80), (1075, 88), (1175, 94), (1235, 154), (1264, 228), (1184, 286), (1094, 310), (1035, 361), (1011, 435), (1065, 486), (1136, 507), (1219, 550), (1252, 639), (1260, 677)]
+    INDIVIDUAL_PATH_COORDINATES = ()
+
+class EnemyConstants:
+    """
+    A collection of enemy-related constants 
+    """
+
+    # The additional buffer to // by during animation count and to * by during len(images) to slow down images 
+    # --> the higher the buffer --> the slower the image rotation will be
+    SLOW_ENEMY_MOVE_ANIMATION_BUFFER = { 
+        'monster': 1,
+        'mano': 3,
+        'king_slime': 4,
+        'balrog': 5,
+        'pianus': 2,
+        'pink_bean': 3
+    }
+
+    SLOW_ENEMY_DEATH_ANIMATION_BUFFER = { 
+        'monster': 1,
+        'mano': 5,
+        'king_slime': 5,
+        'balrog': 15,
+        'pianus': 4,
+        'pink_bean': 10
+    }
+
+    MONSTER_NAMES = ['monster_1', 'monster_2', 'monster_3', 'monster_4', 'monster_5', 'monster_6', 'monster_7', 'monster_8', 'monster_9', 'monster_10']
+    BOSS_NAMES = ['mano', 'king_slime', 'balrog', 'pianus', 'pink_bean']
 
     HEALTH = {
         # Monsters
@@ -52,7 +84,7 @@ class GameConstants:
         'monster_9': 34,
         'monster_10': 40,
 
-        # bosses
+        # Bosses
         'mano': 1000,
         'king_slime': 2000,
         'balrog': 3000, 
@@ -60,65 +92,35 @@ class GameConstants:
         'pink_bean': 5000
     }
 
-    # The additional buffer to // by during animation count and to * by during len(images) to slow down images 
-    # --> the higher the buffer --> the slower the image rotation will be
-    SLOW_ENEMY_MOVE_ANIMATION_BUFFER = { 
-        'monster': 1,
-        'mano': 3,
-        'king_slime': 4,
-        'balrog': 5,
-        'pianus': 2,
-        'pink_bean': 3
-    }
-
-    SLOW_ENEMY_DEATH_ANIMATION_BUFFER = { 
-        'monster': 1,
-        'mano': 5,
-        'king_slime': 5,
-        'balrog': 15,
-        'pianus': 4,
-        'pink_bean': 10
-    }
-
-    # Names of monsters and bosses in the waves
-    MONSTER_NAMES = ['monster_1', 'monster_2', 'monster_3', 'monster_4', 'monster_5', 'monster_6', 'monster_7', 'monster_8', 'monster_9', 'monster_10']
-    BOSS_NAMES = ['mano', 'king_slime', 'balrog', 'pianus', 'pink_bean']
-
-    PATH = [(0, 531), (50, 531), (136, 518), (195, 496), (232, 424), (263, 349), (358, 312), (438, 285), (475, 217), (499, 133), (581, 101), (664, 101), (733, 94), (822, 83), (889, 72), (984, 80), (1075, 88), (1175, 94), (1235, 154), (1264, 228), (1184, 286), (1094, 310), (1035, 361), (1011, 435), (1065, 486), (1136, 507), (1219, 550), (1252, 639), (1260, 677)]
-    INDIVIDUAL_PATH_COORDINATES = ()
-
-class WaveConstants:
-    """
-    A collection of wave-related constants for the monsters
-    """
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
-    ENEMY_WAVES_AMOUNT = {
-        0: [1, 1, 1, 1],
-        1: [1, 1, 1, 1],
-        2: [1, 1, 1, 1],
-        3: [1, 1, 1, 1],
-        4: [1, 1, 1, 1],
-        5: [1, 1, 1, 1],
-        6: [1, 1, 1, 1],
-        7: [1, 1, 1, 1],
-        8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        10: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    }
-
     # ENEMY_WAVES_AMOUNT = {
-    #     0: [35, 25, 15, 10],
-    #     1: [10, 35, 25, 15],
-    #     2: [15, 10, 35, 25],
-    #     3: [10, 15, 25, 35],
-    #     4: [50, 35, 25, 15],
-    #     5: [15, 50, 35, 25],
-    #     6: [25, 15, 50, 35],
-    #     7: [15, 25, 35, 50],
-    #     8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
-    #     9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50]
+    #     0: [1, 1, 1, 1],
+    #     1: [1, 1, 1, 1],
+    #     2: [1, 1, 1, 1],
+    #     3: [1, 1, 1, 1],
+    #     4: [1, 1, 1, 1],
+    #     5: [1, 1, 1, 1],
+    #     6: [1, 1, 1, 1],
+    #     7: [1, 1, 1, 1],
+    #     8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    #     9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    #     10: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     # }
+    
+
+    ENEMY_WAVES_AMOUNT = {
+        0: [35, 25, 15, 10],
+        1: [10, 35, 25, 15],
+        2: [15, 10, 35, 25],
+        3: [10, 15, 25, 35],
+        4: [50, 35, 25, 15],
+        5: [15, 50, 35, 25],
+        6: [25, 15, 50, 35],
+        7: [15, 25, 35, 50],
+        8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
+        9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50]
+    }
 
     # After every round, there will be a boss
     # --> below is the round #: boss name (key, value) pairing
@@ -204,6 +206,15 @@ class TowerConstants:
         'support_range': [500, 1250, "MAX"],
         'fire': [500, 1250, "MAX"],
         'ice': [500, 1250, "MAX"],
+    }
+
+    ORIGINAL_PRICE = {
+        'bowman': 400,
+        'crossbowman': 600,
+        'support_damage': 800,
+        'support_range': 1250,
+        'fire': 1500,
+        'ice': 2000
     }
 
     # Names of attack and support towers 

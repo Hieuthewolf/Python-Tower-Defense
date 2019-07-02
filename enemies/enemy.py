@@ -1,5 +1,5 @@
 from objectFormation import GameObjects
-from constants import GameConstants, EnemyImagesConstants
+from constants import GameConstants, EnemyConstants, EnemyImagesConstants
 # from usefulFunctions import createPathLayout
 import pygame
 import math
@@ -25,11 +25,11 @@ class Enemy(GameObjects):
         self.image = None #The current image that's being shown at a specific time frame
 
         # Health
-        self.max_health = GameConstants.HEALTH[name]
+        self.max_health = EnemyConstants.HEALTH[name]
         self.health = self.max_health
 
         # Enemy crystal worth
-        self.crystal_worth = GameConstants.ENEMY_CRYSTALS[name]
+        self.crystal_worth = EnemyConstants.ENEMY_CRYSTALS[name]
 
         # Death animation
         self.death = EnemyImagesConstants.ENEMY_DEATH_SPRITE_IMAGES[name][:]
@@ -37,13 +37,13 @@ class Enemy(GameObjects):
         self.dead = False
 
         # Additional constants to slow down move or death animation
-        if name in GameConstants.MONSTER_NAMES:
+        if name in EnemyConstants.MONSTER_NAMES:
             # Higher means it will take longer to go through the images
-            self.slow_down_move_animation = GameConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER['monster'] #For monsters
-            self.slow_down_death_animation = GameConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER['monster']
+            self.slow_down_move_animation = EnemyConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER['monster'] #For monsters
+            self.slow_down_death_animation = EnemyConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER['monster']
         else:
-            self.slow_down_move_animation = GameConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER[name] # For bosses
-            self.slow_down_death_animation = GameConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER[name]
+            self.slow_down_move_animation = EnemyConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER[name] # For bosses
+            self.slow_down_death_animation = EnemyConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER[name]
 
         # Flips the images based on the direction they're facing
         self.flipped = False

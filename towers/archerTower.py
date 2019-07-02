@@ -3,7 +3,6 @@ from .tower import Tower
 import os
 import math
 from usefulFunctions import import_images_numbers
-from constants import GameConstants
 
 # <-------------------------------------------- ARCHER TOWER FAR  -------------------------------------------------->
 
@@ -81,7 +80,7 @@ class ArcherTowerFar(Tower):
             self.archer_count = 0
         
         # Sorting by horizontal distance so the archer tower knows what direction to face 
-        lowest_health_enemies.sort(key = lambda e: e.health)
+        lowest_health_enemies.sort(key = lambda e: (self.x - e.x) ** 2 + (self.y - y) ** 2)
         
         if lowest_health_enemies:
             target = lowest_health_enemies[0]
