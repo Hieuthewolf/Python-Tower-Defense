@@ -18,6 +18,8 @@ class GameObjects:
             self.dimensions = GameConstants.DIMENSIONS['att_tower'] #attack tower
         elif name in TowerConstants.SUP_TOWER_NAMES:
             self.dimensions = GameConstants.DIMENSIONS['supp_tower'] #Support tower
+        elif name in TowerConstants.MAGIC_TOWER_NAMES:
+            self.dimensions = GameConstants.DIMENSIONS['magic_tower']
         else:
             self.dimensions = GameConstants.DIMENSIONS['boss'] #bosses
 

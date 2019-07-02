@@ -58,6 +58,9 @@ class Tower(GameObjects):
         # For moving the archer tower when purchasing from the shops
         self.being_dragged = False
 
+        # Padding for clicking purposes
+        self.extra_padding = 10
+
     def draw(self, window):
         """
         Using our list of images, draws the tower
@@ -95,19 +98,15 @@ class Tower(GameObjects):
         """
         tower_image = self.tower_images[self.level - 1]
 
-        # Att tower dimensions will be different from that of support towers and magic towers
-
-        if self.name in TowerConstants.ATT_TOWER_NAMES:
-            if X <= self.x + tower_image.get_width() // 2  - 15 and X >= self.x - tower_image.get_width() // 2 + 5:
-                if Y  <= self.y + self.height - tower_image.get_height() - 25 and Y >= self.y - tower_image.get_height() + 20:
+        if X <= self.x + tower_image.get_width() // 2  - 2 * self.extra_padding and X >= self.x - tower_image.get_width() // 2 + self.extra_padding // 2:
+            if self.name in TowerConstants.MAGIC_TOWER_NAMES or self.name in TowerConstants.SUP_TOWER_NAMES:
+                if Y <= self.y + self.height // 2 - (2 * self.extra_padding) and Y >= self.y - self.height // 2 + (2 * self.extra_padding):
                     return True
-            return False
-
-        elif self.name in TowerConstants.SUP_TOWER_NAMES:
-            if X <= self.x + tower_image.get_width() // 2  and X >= self.x - tower_image.get_width() // 2 :
-                if Y  <= self.y + tower_image.get_height() // 2 and Y >= self.y - tower_image.get_height() // 2:
+            else:
+                if Y <= self.y + self.height // 2 - (4 * self.extra_padding) and Y >= self.y - self.height // 2 + (2 * self.extra_padding):
                     return True
-            return False
+        return False
+
 
     def get_sell_cost(self):
         """

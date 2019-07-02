@@ -17,7 +17,7 @@ from objectFormation import GameObjects
 #Importing Towers
 from towers.archerTower import ArcherTowerFar, ArcherTowerShort
 from towers.supportTower import DamageTower, RangeTower
-from towers.magicTower import FireMagicTower
+from towers.magicTower import FireTower
 
 #Importing main menu
 from menu.menu import ShopMenu, GameStateButton
@@ -55,7 +55,7 @@ class Game:
         # Tower variables
         self.attack_towers = []
         self.support_towers = []
-        self.magic_towers = [FireMagicTower('fire', (500, 500))]
+        self.magic_towers = []
 
         #Enemy variables
         self.dead_enemies = set()
@@ -154,13 +154,13 @@ class Game:
 
     def buy_tower(self, name):
         x, y = pygame.mouse.get_pos()
-        tower_obj_pair = {"bowman": ArcherTowerFar("bowman", (x, y)), "crossbowman": ArcherTowerShort("crossbowman", (x, y)), "support_damage": DamageTower("support_damage", (x, y)), "support_range": RangeTower("support_range", (x, y))}
+        tower_obj_pair = {"bowman": ArcherTowerFar("bowman", (x, y)), "crossbowman": ArcherTowerShort("crossbowman", (x, y)), "support_damage": DamageTower("support_damage", (x, y)), "support_range": RangeTower("support_range", (x, y)), "magic_fire": FireTower("magic_fire", (x, y)), "magic_ice": FireTower("magic_ice", (x, y))}
         try:
             tower_obj = tower_obj_pair[name]
             self.drag_object = tower_obj
             tower_obj.being_dragged = True
         except Exception as error:  
-            print(str(error) + "Invalid Name")
+            print(error + " " + "Invalid Name")
 
     def run(self):
         ongoing = True

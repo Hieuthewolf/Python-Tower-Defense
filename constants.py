@@ -14,7 +14,7 @@ class GameConstants:
         'boss': (150, 150),
         'att_tower': (80, 145), # The additional height is due to the archer on top and extra padding for menu
         'supp_tower': (80, 105), # The additional height helps to pad the popup menu (give or take 25)
-        'magic_tower': (80, 125), # The additional height is due to the orb classifier on top and extra padding for menu
+        'magic_tower': (80, 115), # The additional height is due to the orb classifier on top and extra padding for menu
         'menu': (130, 70),
     }
 
@@ -196,7 +196,8 @@ class TowerConstants:
         'crossbowman': 150,
         'support_damage': 150,
         'support_range': 150,
-        'fire': 250
+        'magic_fire': 250,
+        'magic_ice': 250
     }
 
     UPGRADE_COST = {
@@ -204,8 +205,8 @@ class TowerConstants:
         'crossbowman': [1000, 5000, "MAX"],
         'support_damage': [350, 900, "MAX"],
         'support_range': [500, 1250, "MAX"],
-        'fire': [500, 1250, "MAX"],
-        'ice': [500, 1250, "MAX"],
+        'magic_fire': [500, 1250, "MAX"],
+        'magic_ice': [500, 1250, "MAX"],
     }
 
     ORIGINAL_PRICE = {
@@ -213,11 +214,11 @@ class TowerConstants:
         'crossbowman': 600,
         'support_damage': 800,
         'support_range': 1250,
-        'fire': 1500,
-        'ice': 2000
+        'magic_fire': 1500,
+        'magic_ice': 2000
     }
 
-    # Names of attack and support towers 
+    # Names of attack, support towers, and magic towers
     ATT_TOWER_NAMES = ['bowman', 'crossbowman']
     SUP_TOWER_NAMES = ['support_damage', 'support_range']
-    MAGIC_TOWER_NAMES = ['fire', 'ice']
+    MAGIC_TOWER_NAMES = ['magic_fire', 'magic_ice']

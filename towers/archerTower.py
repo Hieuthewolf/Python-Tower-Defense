@@ -63,14 +63,14 @@ class ArcherTowerFar(Tower):
         :return: None
         """
         self.enemy_in_range = False
-        lowest_health_enemies = []
+        closest_enemies = []
         for e in enemies:
             x, y = e.x, e.y
 
             dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
             if dist < self.range:
                 self.enemy_in_range = True
-                lowest_health_enemies.append(e)
+                closest_enemies.append(e)
 
         if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
             self.archer_count += 1
@@ -80,10 +80,10 @@ class ArcherTowerFar(Tower):
             self.archer_count = 0
         
         # Sorting by horizontal distance so the archer tower knows what direction to face 
-        lowest_health_enemies.sort(key = lambda e: (self.x - e.x) ** 2 + (self.y - y) ** 2)
+        closest_enemies.sort(key = lambda e: (self.x - e.x) ** 2 + (self.y - y) ** 2)
         
-        if lowest_health_enemies:
-            target = lowest_health_enemies[0]
+        if closest_enemies:
+            target = closest_enemies[0]
 
             #Decrements health bar of enemies only when the archer has finished its animation
             if self.archer_count == 12: 
