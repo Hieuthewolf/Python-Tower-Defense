@@ -53,7 +53,7 @@ class Game:
         self.window = pygame.display.set_mode((GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
         # Tower variables
-        self.attack_towers = []
+        self.archer_towers = []
         self.support_towers = []
         self.magic_towers = []
 
@@ -64,7 +64,7 @@ class Game:
         self.boss = True
         self.next_round_after_boss = False
 
-        self.money = 200000
+        self.money = 1500
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
@@ -198,7 +198,7 @@ class Game:
                 self.drag_object.move(pos[0], pos[1])
                 mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
 
-                all_towers = self.attack_towers[:] + self.support_towers[:]
+                all_towers = self.archer_towers[:] + self.support_towers[:] + self.magic_towers[:]
 
                 for tower in all_towers:
                     if mouse_obj.does_collides(tower):
@@ -218,12 +218,13 @@ class Game:
                         continue
 
                     if self.drag_object and not self.invalid_tower_placement:
+                        self.drag_object.coord = (pos[0], pos[1])
                         if self.drag_object.name in TowerConstants.ATT_TOWER_NAMES:
-                            self.drag_object.coord = (pos[0], pos[1])
-                            self.attack_towers.append(self.drag_object)
-                        else:
-                            self.drag_object.coord = (pos[0], pos[1])
+                            self.archer_towers.append(self.drag_object)
+                        elif self.drag_object.name in TowerConstants.SUP_TOWER_NAMES:
                             self.support_towers.append(self.drag_object)
+                        else:
+                            self.magic_towers.append(self.drag_object)
 
                         if self.money >= self.shop_menu.get_it_cost(self.drag_object.name):
                             self.money -= self.shop_menu.get_it_cost(self.drag_object.name)
@@ -263,7 +264,7 @@ class Game:
                             if self.tower_clicked == "sell":
                                 self.money += self.tower_selected.get_sell_cost()
                                 if self.tower_selected.name in TowerConstants.ATT_TOWER_NAMES: #Remove from att towers
-                                    self.attack_towers.remove(self.tower_selected)
+                                    self.archer_towers.remove(self.tower_selected)
                                 elif self.tower_selected.name in TowerConstants.SUP_TOWER_NAMES: #Remove from supp towers
                                     self.support_towers.remove(self.tower_selected)
                                 else: #Remove from magic towers
@@ -276,7 +277,7 @@ class Game:
 
                         # If we're not on the menu of an item
                         if not self.tower_clicked:
-                            all_towers = self.attack_towers[:] + self.support_towers[:]
+                            all_towers = self.archer_towers[:] + self.support_towers[:] + self.magic_towers[:]
                             for t in all_towers:
                                 if t.click(pos[0], pos[1]):
                                     t.selected = True
@@ -304,8 +305,12 @@ class Game:
                         self.lives -= 1
                     self.enemies.remove(e)
 
-                # Looping through the towers and attack enemies if any are in range
-                for t in self.attack_towers:
+                # Looping through attack towers and attack enemies if any are in range
+                for t in self.archer_towers:
+                    self.money += t.attack(self.enemies, self.dead_enemies)
+
+                # Looping through magic towers and attack enemies if they are in range
+                for t in self.magic_towers:
                     self.money += t.attack(self.enemies, self.dead_enemies)
 
                 for e in self.dead_enemies:
@@ -313,7 +318,8 @@ class Game:
                         self.next_round_after_boss = True
 
                 for t in self.support_towers:
-                    t.support(self.attack_towers)
+                    attack_towers = self.archer_towers[:] + self.magic_towers[:]
+                    t.support(attack_towers)
 
                 # Terminating Game Over condition
                 if self.lives <= 0:
@@ -332,7 +338,7 @@ class Game:
         #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
 
         # Drawing towers
-        for a in self.attack_towers:
+        for a in self.archer_towers:
             a.draw(self.window)
         for s in self.support_towers:
             s.draw(self.window)
