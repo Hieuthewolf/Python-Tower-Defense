@@ -47,6 +47,10 @@ class Enemy(GameObjects):
 
         # Flips the images based on the direction they're facing
         self.flipped = False
+    
+        # For freezing logistics
+        self.affected = False
+        self.move_speed = 2
         
     def die(self, window):
         if self.dead:
@@ -63,6 +67,8 @@ class Enemy(GameObjects):
         Will return true if the next coordinate is a valid coordinate in the path and false if the enemy is beyond the path goal
         :return: booleans
         """ 
+        move_speed = self.move_speed
+
         self.animation_count += 1
         if self.animation_count >= len(self.images) * self.slow_down_move_animation:
             self.animation_count = 0
@@ -75,7 +81,7 @@ class Enemy(GameObjects):
 
         vector = ((x2 - x1), (y2 - y1))
         length = math.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)
-        direction = (2 * vector[0] / length,  2 * vector[1] / length)
+        direction = (move_speed * vector[0] / length,  move_speed * vector[1] / length)
 
         if direction[0] < 0 and not self.flipped:
             self.flipped = True
@@ -116,6 +122,7 @@ class Enemy(GameObjects):
                     self.currentPathPos += 1
 
         return True
+        
 
     def draw(self, window):
         """
@@ -148,7 +155,22 @@ class Enemy(GameObjects):
         
         if res:
             pygame.draw.rect(window, (0, 255, 0), (self.x - 30, self.y - 50, res, 10), 0)
+    
+    def update_speed_status(self, ice_towers):
+        """
+        Updates the current speed of the enemy if it is no longer under the effect of ice towers
+        """
+        not_affected = True
+        for t in ice_towers:
+            if t.aim_target:
+                aim_target = t.aim_target
+                if math.sqrt((self.x - aim_target.x) ** 2 + (self.y - aim_target.y) ** 2) <= t.area_of_effect:
+                    not_affected = False
+                    break
 
+        if not_affected:
+            self.move_speed = 2
+            
 class BossEnemy(Enemy):
     def __init__(self, name):
         super().__init__(name)

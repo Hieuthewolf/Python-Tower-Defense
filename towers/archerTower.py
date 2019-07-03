@@ -42,7 +42,6 @@ class ArcherTowerFar(Tower):
         self.enemy_in_range = False
 
     def draw(self, window):
-        super().draw_tower_radius(window)
         super().draw(window)
 
         archer = self.archer_images[self.archer_count // 3] 
@@ -80,8 +79,8 @@ class ArcherTowerFar(Tower):
             self.archer_count = 0
         
         # Sorting by horizontal distance so the archer tower knows what direction to face 
-        closest_enemies.sort(key = lambda e: (self.x - e.x) ** 2 + (self.y - y) ** 2)
-        
+        closest_enemies.sort(key = lambda e: math.sqrt((self.x - e.x) ** 2 + (self.y - e.y) ** 2))
+
         if closest_enemies:
             target = closest_enemies[0]
 

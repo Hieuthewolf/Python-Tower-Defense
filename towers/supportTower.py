@@ -21,7 +21,6 @@ class DamageTower(Tower):
         self.increase = [0.2, 0.4, 0.6]
 
     def draw(self, window):
-        super().draw_tower_radius(window)
         super().draw(window)
 
     def support(self, towers):

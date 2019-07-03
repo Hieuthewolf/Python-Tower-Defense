@@ -14,7 +14,7 @@ class GameConstants:
         'boss': (150, 150),
         'att_tower': (80, 145), # The additional height is due to the archer on top and extra padding for menu
         'supp_tower': (80, 105), # The additional height helps to pad the popup menu (give or take 25)
-        'magic_tower': (80, 115), # The additional height is due to the orb classifier on top and extra padding for menu
+        'magic_tower': (80, 175), # The additional height is due to the orb classifier on top and extra padding for menu
         'menu': (130, 70),
     }
 

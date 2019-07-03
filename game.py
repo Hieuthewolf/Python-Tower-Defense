@@ -17,7 +17,7 @@ from objectFormation import GameObjects
 #Importing Towers
 from towers.archerTower import ArcherTowerFar, ArcherTowerShort
 from towers.supportTower import DamageTower, RangeTower
-from towers.magicTower import FireTower
+from towers.magicTower import FireTower, IceTower
 
 #Importing main menu
 from menu.menu import ShopMenu, GameStateButton
@@ -64,7 +64,7 @@ class Game:
         self.boss = True
         self.next_round_after_boss = False
 
-        self.money = 1500
+        self.money = 5000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
@@ -120,6 +120,10 @@ class Game:
         self.soundBtn = GameStateButton(play_music, pause_music, self.width - play_music.get_width() - play_round.get_width(), wave.get_height() - 5)
         self.soundBtn.switch_img()
 
+        if self.tower_selected:
+            self.tower_radius_surface = pygame.Surface((self.tower_selected.range * 4, self.tower_selected.range * 4), pygame.SRCALPHA, 32)
+            pygame.draw.circle(self.tower_radius_surface, (128, 128, 128, 100), (self.tower_selected.range, self.tower_selected.range), self.tower_selected.range, 0)
+
     def spawn_enemies(self):
         """
         Spawns enemies based on the current wave
@@ -154,7 +158,7 @@ class Game:
 
     def buy_tower(self, name):
         x, y = pygame.mouse.get_pos()
-        tower_obj_pair = {"bowman": ArcherTowerFar("bowman", (x, y)), "crossbowman": ArcherTowerShort("crossbowman", (x, y)), "support_damage": DamageTower("support_damage", (x, y)), "support_range": RangeTower("support_range", (x, y)), "magic_fire": FireTower("magic_fire", (x, y)), "magic_ice": FireTower("magic_ice", (x, y))}
+        tower_obj_pair = {"bowman": ArcherTowerFar("bowman", (x, y)), "crossbowman": ArcherTowerShort("crossbowman", (x, y)), "support_damage": DamageTower("support_damage", (x, y)), "support_range": RangeTower("support_range", (x, y)), "magic_fire": FireTower("magic_fire", (x, y)), "magic_ice": IceTower("magic_ice", (x, y))}
         try:
             tower_obj = tower_obj_pair[name]
             self.drag_object = tower_obj
@@ -270,8 +274,7 @@ class Game:
                                 else: #Remove from magic towers
                                     self.magic_towers.remove(self.tower_selected)
 
-                                self.tower_selected = None
-                 
+                            self.tower_selected = None
                             self.tower_clicked = False
                             
 
@@ -283,6 +286,9 @@ class Game:
                                     t.selected = True
                                     self.tower_selected = t
                                     self.tower_clicked = True
+
+                                    self.tower_radius_surface = pygame.Surface((self.tower_selected.range * 4, self.tower_selected.range * 4), pygame.SRCALPHA, 32)
+                                    pygame.draw.circle(self.tower_radius_surface, (128, 128, 128, 100), (self.tower_selected.range, self.tower_selected.range), self.tower_selected.range, 0)
                                     break
 
                             for t in all_towers:
@@ -293,6 +299,7 @@ class Game:
                 # Appending to a new list enemeies that are off the screen as indicated by the e.move() return value
                 delete_enemies = []
                 for e in self.enemies:
+                    e.update_speed_status(set(filter(lambda tower: (tower.name == 'magic_ice'), self.magic_towers)))
                     if not e.move():
                         delete_enemies.append(e)
 
@@ -312,7 +319,7 @@ class Game:
                 # Looping through magic towers and attack enemies if they are in range
                 for t in self.magic_towers:
                     self.money += t.attack(self.enemies, self.dead_enemies)
-
+           
                 for e in self.dead_enemies:
                     if e.name in EnemyConstants.BOSS_NAMES:
                         self.next_round_after_boss = True
@@ -336,6 +343,9 @@ class Game:
         # Testing purposes of mouse movement
         # for p in self.clicks:
         #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+
+        if self.tower_selected:
+            self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))
 
         # Drawing towers
         for a in self.archer_towers:

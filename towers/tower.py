@@ -67,9 +67,8 @@ class Tower(GameObjects):
         :param window: surface
         :return: None
         """
-        #Drawing menu
         if self.selected:
-            self.menu.draw(window)
+            self.menu.draw(window)  #Drawing menu
 
         tower_image = self.tower_images[self.level - 1]
         window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
@@ -80,14 +79,6 @@ class Tower(GameObjects):
             if self.level_animation == len(level_up) * 2:
                 self.level_up_animation = False
                 self.level_animation = 0
-
-    def draw_tower_radius(self, window):    
-        if self.selected:
-            #tower transparent circular range indicator
-            s = pygame.Surface((self.range * 4, self.range * 4), pygame.SRCALPHA, 32)
-            pygame.draw.circle(s, (128, 128, 128, 100), (self.range, self.range), self.range, 0)
-            
-            window.blit(s, (self.x - self.range, self.y - self.range))
 
     def click(self, X, Y):
         """
