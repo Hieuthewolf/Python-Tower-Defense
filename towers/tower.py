@@ -71,9 +71,11 @@ class Tower(GameObjects):
             self.menu.draw(window)  #Drawing menu
 
         tower_image = self.tower_images[self.level - 1]
-        window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
 
-        if self.level_up_animation:
+        if not self.level_up_animation: #Always draw the tower except when leveling up
+            window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
+
+        else: #Leveling up animation procedure
             window.blit(self.level_up[self.level_animation // 2], (self.x - tower_image.get_width() - 75, self.y - 225))
             self.level_animation += 1
             if self.level_animation == len(level_up) * 2:

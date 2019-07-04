@@ -64,7 +64,7 @@ class Game:
         self.boss = True
         self.next_round_after_boss = False
 
-        self.money = 5000
+        self.money = 100000
         self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
