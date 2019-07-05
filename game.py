@@ -347,8 +347,8 @@ class Game:
         self.window.blit(self.background_img, (0, 0))
 
         # Testing purposes of mouse movement
-        for p in self.clicks:
-            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+        # for p in self.clicks:
+        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
 
         if self.tower_selected:
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))

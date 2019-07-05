@@ -14,6 +14,11 @@ sell_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgr
 level_up = import_images_numbers("images/level_up/", 1, 25, (300, 300))
 
 class Tower(GameObjects):
+    """
+    Base structural class for our towers
+    @param (STR) name: name of object 
+    @param (TUPLE) coord: (x, y) coordinates of object 
+    """
     def __init__(self, name, coord):
         super().__init__(name, coord)
         # Tower coordinates
@@ -65,14 +70,15 @@ class Tower(GameObjects):
 
     def draw(self, window):
         """
-        Using our list of images, draws the tower
-        :param window: surface
-        :return: None
+        Draws the tower, menu, and level-up animation upon condition
+        @param (SURFACE) window: surface for rendering the drawing
+        
+        --> return: None
         """
         if self.selected:
             self.menu.draw(window)  #Drawing menu
 
-        tower_image = self.tower_images[self.level - 1]
+        tower_image = self.tower_images[self.level-1]
 
         if not self.level_up_animation: #Always draw the tower except when leveling up
             window.blit(tower_image, (self.x - tower_image.get_width() // 2, self.y - tower_image.get_height() // 2))
@@ -86,10 +92,11 @@ class Tower(GameObjects):
 
     def click(self, X, Y):
         """
-        returns a boolean if tower has been clicked on and selects the tower if it's clicked
-        :param X: int
-        :param Y: int
-        :return: bool
+        returns True if tower has been selected else False
+        @param (INT) X: mouse position's x-coordinate
+        @param (INT) Y: mouse position's y-coordinate
+        
+        --> return: Bool
         """
         tower_image = self.tower_images[self.level - 1]
 
@@ -105,53 +112,61 @@ class Tower(GameObjects):
 
     def get_sell_cost(self):
         """
-        Sells the tower once it has been placed down and return the selling price
-        :return: int
+        Sells the tower at a specific level at a reduced cost using our self.sell_price list of prices
+
+        --> return: Int
         """
         return round(0.75 * self.sell_price[self.level - 1])
 
     def upgrade(self):
         """
-        Upgrades tower for a certain cost
-        :return: None
+        Upgrades our tower and increment certain tower characteristics 
+
+        --> return: None
         """
         if self.level < len(self.tower_images):
             self.level_up_animation = True
             self.level += 1
             self.base_damage += 1
             self.damage = self.base_damage
+
             #Since level does not upgrade in menu we have to manually do it here
             self.menu.tower_level += 1
     
     def get_upgrade_cost(self):
         """
-        Returns upgrade cost; 0 --> indicates that we can't upgrade
-        :return: int
+        Returns our upgrade cost for the next tower level
+
+        --> return: Int
         """
         return self.cost[self.level - 1]
 
-    def move(self, x, y):
+    def move(self, X, Y):
         """
-        Moves our tower to the coordinate (x, y)
-        @param x: int
-        @param y: int
-        :return: None
+        Moves our tower to the coordinate (x, y) and updates menu coordinates
+        @param (INT) X: mouse position's x-coordinate
+        @param (INT) Y: mouse position's y-coordinate
+        
+        --> return: None
         """
-        self.menu.x, self.menu.y = x, y
-        self.x, self.y = x, y
+        self.menu.x, self.menu.y = X, Y
+        self.x, self.y = X, Y
         self.menu.update_buttons()
 
     def get_closest_distance_to_path(self, path):
+        """
+        Gets the closest distance from a tower at any point to the path 
+        @param (LIST) path: list of tuples containing path coordinates
+
+        --> return: Float
+        """
         game_path = path[:]
         game_path.sort(key = lambda coord: calculate_distance(self, coord))
-
-
         point_A = game_path[0] # Closest point out of all the points on the path to to the tower
 
         try:
             point_after_A = path[path.index(point_A) + 1]
             point_before_A = path[path.index(point_A) - 1]
-
             closest_to_A = min(point_after_A, point_before_A, key = lambda point: calculate_distance(point_A, point))
         except:
             if path.index(point_A) == 0:
@@ -165,36 +180,3 @@ class Tower(GameObjects):
 
             closest_distance = abs(-m * self.x + self.y - b) / math.sqrt((-m) ** 2 + 1)
             return closest_distance
-
-            # if path.index(point_A) + 1 == len(game_path):
-
-
-            # point_after_A = point_A
-            # point_before_A = point_A
-
-
-
-
-
-        # if (path.index(point_A) - 1) >= 0 and (path.index(point_A) + 1) < len(game_path):
-            
-        #     if calculate_distance(point_A, path[path.index(point_)])
-        #     point_B = min(calculate_distance(point_A, path[path.index(point_A) - 1]), calculate_distance(point_A, path[path.index(point_A) + 1]))
-
-        # print(point_A, point_B)
-
-        # point_A, point_B = game_path[0], game_path[1]
-
-        #
-        # print(closest_distance, point_A, point_B)
-        # return closest_distance
-
-
-
-
-
-
-
-
-
-    

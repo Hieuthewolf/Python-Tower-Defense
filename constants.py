@@ -94,23 +94,8 @@ class EnemyConstants:
 
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
-    # ENEMY_WAVES_AMOUNT = {
-    #     0: [1, 1, 1, 1],
-    #     1: [1, 1, 1, 1],
-    #     2: [1, 1, 1, 1],
-    #     3: [1, 1, 1, 1],
-    #     4: [1, 1, 1, 1],
-    #     5: [1, 1, 1, 1],
-    #     6: [1, 1, 1, 1],
-    #     7: [1, 1, 1, 1],
-    #     8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    #     9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    #     10: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    # }
-    
-
     ENEMY_WAVES_AMOUNT = {
-        0: [1, 1, 1, 1],
+        0: [35, 25, 15, 10],
         1: [10, 35, 25, 15],
         2: [15, 10, 35, 25],
         3: [10, 15, 25, 35],
@@ -131,11 +116,6 @@ class EnemyConstants:
         3: 'pianus',
         4: 'pink_bean'
     }
-
-class EnemyImagesConstants:
-    """
-    A collection of monster sprite images 
-    """
 
     # Collection of all the moving sprite images
     ENEMY_MOVING_SPRITE_IMAGES = {

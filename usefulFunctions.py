@@ -7,10 +7,10 @@ def calculate_distance(point_A, point_B):
     """
     Calculates the distance from point A to point B with class properties kept in mind
     In the case of one point being an object and another a coordinate tuple --> point_A will always be the object
-    @param point_A: either a tower object or a coordinate tuple 
-    @param point_B: either a tower object or a coordinate tuple
+    @param (OBJECT OR TUPLE) point_A: either a tower object or a coordinate tuple 
+    @param (OBJECT OR TUPLE) point_B: either a tower object or a coordinate tuple
 
-    --> return: distance (not Euclidean) between the two points
+    --> return: Float
     """
     # Both points are tower or enemy objects
     if not isinstance(point_A, tuple) and not isinstance(point_B, tuple):
@@ -27,12 +27,12 @@ def calculate_distance(point_A, point_B):
 def import_images_numbers(img_directory, starting_bound, ending_bound, scaled_dim = None):
     """
     Returns all the sprite images as a list 
-    @param img_directory: the path in the OS to get to the image --> ex: "images/towers/archer_towers/archer_1/"
-    @param starting_bound: the starting bound for the first number associated with the image --> ex: 001 
-    @param ending_bound: the ending bound for the last number associated with the image + 1 
-    @param scaled_dim = a (width, height) tuple to indicate desired scaled dimensions --> ex: (64, 64)
+    @param (STR) img_directory: the path in the OS to get to the image --> ex: "images/towers/archer_towers/archer_1/" 
+    @param (INT) starting_bound: the starting bound for the first number associated with the image --> ex: 001 
+    @param (INT) ending_bound: the ending bound for the last number associated with the image + 1 
+    @param (TUPLE) scaled_dim = a (width, height) tuple to indicate desired scaled dimensions --> ex: (64, 64) 
 
-    --> return: image list
+    --> return: List
     """
     images = []
 
@@ -48,13 +48,13 @@ def import_images_numbers(img_directory, starting_bound, ending_bound, scaled_di
 def import_images_name(img_directory, name_trail, starting_bound, ending_bound, scaled_dim = None):
     """
     Returns all the sprite images as a list 
-    @param img_directory: the path in the OS to get to the image --> ex: "images/towers/archer_towers/archer_1/"
-    @param name_trail: for enemies to indicate what the enemy is 
-    @param starting_bound: the starting bound for the first number associated with the image --> ex: 001 
-    @param ending_bound: the ending bound for the last number associated with the image + 1 
-    @param scaled_dim = a (width, height) tuple to indicate desired scaled dimensions --> ex: (64, 64)
+    @param (STR) img_directory: the path in the OS to get to the image --> ex: "images/towers/archer_towers/archer_1/" (str)
+    @param (STR) name_trail: for enemies to indicate what the enemy is (str)
+    @param (INT) starting_bound: the starting bound for the first number associated with the image --> ex: 001 (int)
+    @param (INT) ending_bound: the ending bound for the last number associated with the image + 1 (int)
+    @param (TUPLE) scaled_dim = a (width, height) tuple to indicate desired scaled dimensions --> ex: (64, 64) (tuple)
 
-    --> return: image list
+    --> return: List 
     """
     images = []
 

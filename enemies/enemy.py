@@ -1,5 +1,5 @@
 from objectFormation import GameObjects
-from constants import GameConstants, EnemyConstants, EnemyImagesConstants
+from constants import GameConstants, EnemyConstants
 from usefulFunctions import calculate_distance
 import pygame
 import math
@@ -19,7 +19,7 @@ class Enemy(GameObjects):
         # self.velocity = Constants.ENEMY_SPEED[name]
         
         # Animating/Modifying appearance of enemies
-        self.images = EnemyImagesConstants.ENEMY_MOVING_SPRITE_IMAGES[name][:]
+        self.images = EnemyConstants.ENEMY_MOVING_SPRITE_IMAGES[name][:]
         self.animation_count = 0
         self.image = None #The current image that's being shown at a specific time frame
 
@@ -31,7 +31,7 @@ class Enemy(GameObjects):
         self.crystal_worth = EnemyConstants.ENEMY_CRYSTALS[name]
 
         # Death animation
-        self.death = EnemyImagesConstants.ENEMY_DEATH_SPRITE_IMAGES[name][:]
+        self.death = EnemyConstants.ENEMY_DEATH_SPRITE_IMAGES[name][:]
         self.death_animation_count = 0
         self.dead = False
 

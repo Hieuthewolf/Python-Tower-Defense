@@ -1,12 +1,13 @@
 from constants import GameConstants, EnemyConstants, TowerConstants
 import math
 
-def distance(a, b):
-    """Returns the Euclidian distance between the two tuple coordinates."""
-    return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
-
 #Defining the Object class that we will be using for our path, for our mobs, obstacles, projectiles, towers
 class GameObjects:
+    """
+    Base structural class for our enemies and towers to keep track of dimensions and collisions
+    @param (STR) name: name of object 
+    @param (TUPLE) coord: (x, y) coordinates of object 
+    """
     def __init__(self, name, coord):
         self.name = name
         self.coord = coord
@@ -24,17 +25,20 @@ class GameObjects:
             self.dimensions = GameConstants.DIMENSIONS['boss'] #bosses
 
     def does_collides(self, other_object):
+        """
+        Detects if one object collides with another (for now the radial distance is hardcoded as 90 --> good baseline)
+        @param (OBJECT) other_object: the other object we're comparing with (i.e. tower, enemy)
+
+        --> return: Bool
+        """
         abs_xDist = abs(other_object.coord[0] - self.coord[0])
         abs_yDist = abs(other_object.coord[1] - self.coord[1])
 
         radial_dist = math.sqrt((abs_xDist ** 2) + (abs_yDist ** 2))
 
-        if radial_dist < 95:
+        if radial_dist < 90:
             return True
         return False
-
-    def distance(self, other_object):
-        return distance(self.coord, other_object.coord)
 
     
 
