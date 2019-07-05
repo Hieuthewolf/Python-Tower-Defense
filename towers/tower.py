@@ -1,9 +1,11 @@
 from objectFormation import GameObjects
 from constants import TowerConstants
-from usefulFunctions import import_images_numbers
+from usefulFunctions import import_images_numbers, calculate_distance
 from menu.menu import Menu
 import pygame
 import os
+
+import math
 
 menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "menu.png")), (145 , 90))
 upgrade_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "upgrade.png")), (55, 55))
@@ -138,6 +140,57 @@ class Tower(GameObjects):
         self.menu.x, self.menu.y = x, y
         self.x, self.y = x, y
         self.menu.update_buttons()
+
+    def get_closest_distance_to_path(self, path):
+        game_path = path[:]
+        game_path.sort(key = lambda coord: calculate_distance(self, coord))
+
+
+        point_A = game_path[0] # Closest point out of all the points on the path to to the tower
+
+        try:
+            point_after_A = path[path.index(point_A) + 1]
+            point_before_A = path[path.index(point_A) - 1]
+
+            closest_to_A = min(point_after_A, point_before_A, key = lambda point: calculate_distance(point_A, point))
+        except:
+            if path.index(point_A) == 0:
+                closest_to_A = path[path.index(point_A) + 1]
+            
+            elif path.index(point_A) == len(path) - 1:
+                closest_to_A = path[path.index(point_A) - 1]
+        finally:
+            m = (closest_to_A[1] - point_A[1]) / (closest_to_A[0] - point_A[0])
+            b = point_A[1] - m * point_A[0]
+
+            closest_distance = abs(-m * self.x + self.y - b) / math.sqrt((-m) ** 2 + 1)
+            return closest_distance
+
+            # if path.index(point_A) + 1 == len(game_path):
+
+
+            # point_after_A = point_A
+            # point_before_A = point_A
+
+
+
+
+
+        # if (path.index(point_A) - 1) >= 0 and (path.index(point_A) + 1) < len(game_path):
+            
+        #     if calculate_distance(point_A, path[path.index(point_)])
+        #     point_B = min(calculate_distance(point_A, path[path.index(point_A) - 1]), calculate_distance(point_A, path[path.index(point_A) + 1]))
+
+        # print(point_A, point_B)
+
+        # point_A, point_B = game_path[0], game_path[1]
+
+        #
+        # print(closest_distance, point_A, point_B)
+        # return closest_distance
+
+
+
 
 
 

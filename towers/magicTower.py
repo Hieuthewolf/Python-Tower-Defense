@@ -1,5 +1,5 @@
 from .tower import Tower
-from usefulFunctions import import_images_numbers, import_images_name
+from usefulFunctions import import_images_numbers, import_images_name, calculate_distance
 import math
 import os
 import pygame
@@ -70,20 +70,11 @@ class FireTower(Tower):
         :return: None
         """
         current_enemies = enemies[:]
-
-        self.enemy_in_range = False
-        enemies_in_range = []
-
-        for e in enemies:
-            x, y = e.x, e.y
-
-            dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
-            if dist <= self.range:
-                self.enemy_in_range = True
-                enemies_in_range.append(e)
+        enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
+        self.enemy_in_range = True if enemies_in_range else False
         
         # Sorting by closest distance in a radial direction
-        enemies_in_range.sort(key = lambda e: math.sqrt((self.x - e.x) ** 2 + (self.y - e.y) ** 2))
+        enemies_in_range.sort(key = lambda e: calculate_distance(self, e))
         
         total_loot = 0
 
@@ -91,7 +82,7 @@ class FireTower(Tower):
             self.aim_target = enemies_in_range[0]
             self.locked = True
 
-        if self.locked and math.sqrt((self.x - self.aim_target.x) ** 2 + (self.y - self.aim_target.y) ** 2) <= self.range:
+        if self.locked and calculate_distance(self, self.aim_target) <= self.range:
             self.fire_flame_count += 1
             if self.fire_flame_count >= len(self.fire_flame_images) * 4:
                 self.fire_flame_count = 0
@@ -99,7 +90,7 @@ class FireTower(Tower):
             #Decrements health bar of enemies only when the archer has finished its animation
             if self.fire_flame_count == 30:
                 for e in current_enemies:
-                    if math.sqrt((e.x - self.aim_target.x) ** 2 + (e.y - self.aim_target.y) ** 2) <= self.area_of_effect:
+                    if calculate_distance(e, self.aim_target) <= self.area_of_effect:
                         e.health -= self.damage
 
                         if e.health <= 0:
@@ -111,9 +102,9 @@ class FireTower(Tower):
                 self.locked = False
         else:
             self.locked = False
+            self.aim_target = None
 
         return total_loot
-
 
 
 # <-------------------------------------------- ICE MAGIC TOWER  -------------------------------------------------->
@@ -145,7 +136,7 @@ class IceTower(Tower):
         self.area_of_effect = 150
 
         self.aim_target = None
-        self.enemy_in_range = None
+        self.enemy_in_range = False
         self.locked = False
 
         self.horizontal_padding = 7
@@ -190,26 +181,17 @@ class IceTower(Tower):
         :return: None
         """
         current_enemies = enemies[:]
-
-        self.enemy_in_range = False
-        enemies_in_range = []
-
-        for e in enemies:
-            x, y = e.x, e.y
-
-            dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
-            if dist <= self.range:
-                self.enemy_in_range = True
-                enemies_in_range.append(e)
+        enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
+        self.enemy_in_range = True if enemies_in_range else False
         
         # Sorting by closest distance in a radial direction
-        enemies_in_range.sort(key = lambda e: math.sqrt((self.x - e.x) ** 2 + (self.y - e.y) ** 2))
+        enemies_in_range.sort(key = lambda e: calculate_distance(self, e))
         
         if enemies_in_range and not self.locked:
             self.aim_target = enemies_in_range[0]
             self.locked = True
 
-        if self.locked and math.sqrt((self.x - self.aim_target.x) ** 2 + (self.y - self.aim_target.y) ** 2) <= self.range:
+        if self.locked and calculate_distance(self, self.aim_target) <= self.range:
             self.ice_freeze_count += 1
             if self.ice_freeze_count >= len(self.ice_freeze_images) * 4:
                 self.ice_freeze_count = 0
@@ -217,7 +199,7 @@ class IceTower(Tower):
             #Decrements health bar of enemies only when the archer has finished its animation
             if self.ice_freeze_count == 30:
                 for e in current_enemies:
-                    if math.sqrt(((e.x - self.aim_target.x) ** 2 + (e.y - self.aim_target.y) ** 2)) <= self.area_of_effect:
+                    if calculate_distance(e, self.aim_target) <= self.area_of_effect:
                         e.move_speed = 1
 
                 self.locked = False

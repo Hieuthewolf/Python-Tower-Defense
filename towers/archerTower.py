@@ -2,12 +2,13 @@ import pygame
 from .tower import Tower
 import os
 import math
-from usefulFunctions import import_images_numbers
+from usefulFunctions import import_images_numbers, calculate_distance
 
 # <-------------------------------------------- ARCHER TOWER FAR  -------------------------------------------------->
 
 # Archer tower images
 archer_tower_far = import_images_numbers("images/towers/archer_towers/archer_1/", 7, 10, (80, 80))
+arrow = pygame.transform.scale(pygame.image.load(os.path.join("images/towers/archer_towers", "arrow.png")), (25, 25))
 
 # Archers images
 archers_far = import_images_numbers("images/towers/archer_towers/archer_top_1/", 37, 43)
@@ -40,6 +41,7 @@ class ArcherTowerFar(Tower):
         self.last_arrow_animation_count = 0
 
         self.enemy_in_range = False
+        self.arrow_hit_target = (None, None)
 
     def draw(self, window):
         super().draw(window)
@@ -51,8 +53,12 @@ class ArcherTowerFar(Tower):
             padding = -25
         else:
             padding = - archer.get_width() + 15
-  
+
         window.blit(archer, ((self.x + padding), (self.y - archer.get_height() - 30)))
+
+        if self.arrow_hit_target[0]:
+            enemy = self.arrow_hit_target[1]
+            window.blit(arrow, (enemy.x, enemy.y))
             
 
     def attack(self, enemies, dead_enemies):
@@ -61,15 +67,8 @@ class ArcherTowerFar(Tower):
         :param enemies: list of enemies
         :return: None
         """
-        self.enemy_in_range = False
-        closest_enemies = []
-        for e in enemies:
-            x, y = e.x, e.y
-
-            dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
-            if dist < self.range:
-                self.enemy_in_range = True
-                closest_enemies.append(e)
+        enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
+        self.enemy_in_range = True if enemies_in_range else False
 
         if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
             self.archer_count += 1
@@ -79,14 +78,17 @@ class ArcherTowerFar(Tower):
             self.archer_count = 0
         
         # Sorting by horizontal distance so the archer tower knows what direction to face 
-        closest_enemies.sort(key = lambda e: math.sqrt((self.x - e.x) ** 2 + (self.y - e.y) ** 2))
+        enemies_in_range.sort(key = lambda e: calculate_distance(self, e))
 
-        if closest_enemies:
-            target = closest_enemies[0]
+        if enemies_in_range:
+            target = enemies_in_range[0]
 
             #Decrements health bar of enemies only when the archer has finished its animation
             if self.archer_count == 12: 
                 target.health -= self.damage
+
+            if self.archer_count > 12:
+                self.arrow_hit_target = (True, target)
 
             if target.health <= 0:
                 self.last_arrow_animation_count += 1

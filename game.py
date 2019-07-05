@@ -74,7 +74,7 @@ class Game:
         self.height = GameConstants.DIMENSIONS['game'][1]
 
         # Testing purposes
-        self.clicks = []
+        self.clicks = GameConstants.PATH
 
         # Spawning enemies
         self.timer = time.time()
@@ -109,6 +109,7 @@ class Game:
 
         # Testing if the location of the tower is valid
         self.invalid_tower_placement = False
+        self.invalid_tower_path_placement = False
         self.mouse_object = None
 
         # Music
@@ -199,6 +200,11 @@ class Game:
             pos = pygame.mouse.get_pos()
 
             if self.drag_object:
+                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH) < 75:
+                    self.invalid_tower_path_placement = (self.drag_object, (self.drag_object.x, self.drag_object.y))
+                else:
+                    self.invalid_tower_path_placement = None
+
                 self.drag_object.move(pos[0], pos[1])
                 mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
 
@@ -341,8 +347,8 @@ class Game:
         self.window.blit(self.background_img, (0, 0))
 
         # Testing purposes of mouse movement
-        # for p in self.clicks:
-        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+        for p in self.clicks:
+            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
 
         if self.tower_selected:
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))
@@ -367,6 +373,11 @@ class Game:
             s = pygame.Surface((60 * 5, 60 * 5), pygame.SRCALPHA, 32)
             pygame.draw.circle(s, (224, 94, 94, 100), (60, 60), 60, 0)
             self.window.blit(s, (self.invalid_tower_placement[1][0] - 60, self.invalid_tower_placement[1][1] - 60))
+
+        if self.invalid_tower_path_placement:
+            s = pygame.Surface((60 * 5, 60 * 5), pygame.SRCALPHA, 32)
+            pygame.draw.circle(s, (224, 94, 94, 100), (60, 60), 60, 0)
+            self.window.blit(s, (self.invalid_tower_path_placement[1][0] - 60, self.invalid_tower_path_placement[1][1] - 60))
 
         # Draw the tower being dragged
         if self.drag_object:

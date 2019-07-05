@@ -110,7 +110,7 @@ class EnemyConstants:
     
 
     ENEMY_WAVES_AMOUNT = {
-        0: [35, 25, 15, 10],
+        0: [1, 1, 1, 1],
         1: [10, 35, 25, 15],
         2: [15, 10, 35, 25],
         3: [10, 15, 25, 35],
@@ -140,16 +140,16 @@ class EnemyImagesConstants:
     # Collection of all the moving sprite images
     ENEMY_MOVING_SPRITE_IMAGES = {
         # Monsters
-        'monster_1': import_images_name("images/enemies/monster/monster_1", "9_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_2': import_images_name("images/enemies/monster/monster_2", "1_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_3': import_images_name("images/enemies/monster/monster_3", "7_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_4': import_images_name("images/enemies/monster/monster_4", "10_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_5': import_images_name("images/enemies/monster/monster_5", "2_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_6': import_images_name("images/enemies/monster/monster_6", "8_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_7': import_images_name("images/enemies/monster/monster_7", "3_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_8': import_images_name("images/enemies/monster/monster_8", "6_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_9': import_images_name("images/enemies/monster/monster_9", "4_enemies_1_walk_0", 0, 20, (80, 80)),
-        'monster_10': import_images_name("images/enemies/monster/monster_10", "5_enemies_1_walk_0", 0, 20, (80, 80)),
+        'monster_1': import_images_name("images/enemies/monster/monster_1", "9_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_2': import_images_name("images/enemies/monster/monster_2", "1_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_3': import_images_name("images/enemies/monster/monster_3", "7_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_4': import_images_name("images/enemies/monster/monster_4", "10_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_5': import_images_name("images/enemies/monster/monster_5", "2_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_6': import_images_name("images/enemies/monster/monster_6", "8_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_7': import_images_name("images/enemies/monster/monster_7", "3_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_8': import_images_name("images/enemies/monster/monster_8", "6_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_9': import_images_name("images/enemies/monster/monster_9", "4_enemies_1_walk_0", 0, 20, (70, 70)),
+        'monster_10': import_images_name("images/enemies/monster/monster_10", "5_enemies_1_walk_0", 0, 20, (70, 70)),
 
         # Bosses
         'mano': import_images_name("images/enemies/boss/mano", "move_0", 1, 11, (150, 150)),

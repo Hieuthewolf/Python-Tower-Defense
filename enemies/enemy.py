@@ -1,6 +1,6 @@
 from objectFormation import GameObjects
 from constants import GameConstants, EnemyConstants, EnemyImagesConstants
-# from usefulFunctions import createPathLayout
+from usefulFunctions import calculate_distance
 import pygame
 import math
 
@@ -8,7 +8,6 @@ class Enemy(GameObjects):
     def __init__(self, name):
         super().__init__(name, GameConstants.PATH[0])
         # Each enemy has access to the game path
-        # self.path = createPathLayout(Constants.PATH_CORNERS)
         self.path = GameConstants.PATH
 
         # Enemy coordinates
@@ -47,6 +46,7 @@ class Enemy(GameObjects):
 
         # Flips the images based on the direction they're facing
         self.flipped = False
+        self.alter_image = None
     
         # For freezing logistics
         self.affected = False
@@ -59,7 +59,6 @@ class Enemy(GameObjects):
             if self.death_animation_count == len(self.death) * self.slow_down_death_animation:
                 self.dead = False
                 self.death_animation_count = 0
-
 
     def move(self):
         """
@@ -79,14 +78,19 @@ class Enemy(GameObjects):
         else:
             x2, y2 = self.path[self.currentPathPos + 1]
 
+
         vector = ((x2 - x1), (y2 - y1))
-        length = math.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)
+        length = calculate_distance((x1, y1), (x2, y2))
         direction = (move_speed * vector[0] / length,  move_speed * vector[1] / length)
+
+        move_x, move_y = ((self.x + direction[0]), (self.y + direction[1]))
+
 
         if direction[0] < 0 and not self.flipped:
             self.flipped = True
             for x, img in enumerate(self.images):
                 self.images[x] = pygame.transform.flip(img, True, False) #Flips moving sprite animations
+                self.x -= 10
             for x, img in enumerate(self.death): 
                 self.death[x] = pygame.transform.flip(img, True, False) #Flips death sprite animations
         
@@ -96,8 +100,6 @@ class Enemy(GameObjects):
                 self.images[x] = pygame.transform.flip(img, True, False)
             for x, img in enumerate(self.death):
                 self.death[x] = pygame.transform.flip(img, True, False)
-
-        move_x, move_y = ((self.x + direction[0]), (self.y + direction[1]))
 
         self.x = move_x
         self.y = move_y
@@ -163,8 +165,7 @@ class Enemy(GameObjects):
         not_affected = True
         for t in ice_towers:
             if t.aim_target:
-                aim_target = t.aim_target
-                if math.sqrt((self.x - aim_target.x) ** 2 + (self.y - aim_target.y) ** 2) <= t.area_of_effect:
+                if calculate_distance(self, t.aim_target) <= t.area_of_effect:
                     not_affected = False
                     break
 
