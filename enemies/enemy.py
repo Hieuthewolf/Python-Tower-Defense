@@ -6,13 +6,13 @@ import math
 import random
 
 class Enemy(GameObjects):
-    def __init__(self, name):
-        super().__init__(name, GameConstants.PATH['map_4'][0][0])
+    def __init__(self, name, map_label):
+        super().__init__(name, GameConstants.PATH[map_label][0][0])
         # Each enemy has access to the game path
-        if len(GameConstants.PATH['map_4']) == 2: #Length of 2 means two possible routes
-            self.path = GameConstants.PATH['map_4'][random.randint(0, 1)]
+        if len(GameConstants.PATH[map_label]) == 2: #Length of 2 means two possible routes
+            self.path = GameConstants.PATH[map_label][random.randint(0, 1)]
         else:
-            self.path = GameConstants.PATH['map_4'][0] #Only one direct path to exit
+            self.path = GameConstants.PATH[map_label][0] #Only one direct path to exit
 
         # Enemy coordinates
         self.x = self.coord[0]
@@ -186,8 +186,8 @@ class Enemy(GameObjects):
             self.move_speed = 2
             
 class BossEnemy(Enemy):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, map_label):
+        super().__init__(name, map_label)
         self.flipped = True #Flips the enemy if not facing the correct unit_vector
 
     def health_bar(self, window):

@@ -49,8 +49,9 @@ buy_magic_ice = pygame.transform.scale(pygame.image.load(os.path.join("images/sh
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 class Game:
-    def __init__(self):
-        self.window = pygame.display.set_mode((GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
+    def __init__(self, window, map_label):
+        self.window = window
+        self.map_label = map_label
 
         # Tower variables
         self.archer_towers = []
@@ -60,12 +61,12 @@ class Game:
         #Enemy variables
         self.dead_enemies = set()
         self.enemies = []
-        self.all_bosses = [Mano("mano"), KingSlime("king_slime"), Balrog("balrog"), Pianus('pianus'), PinkBean('pink_bean')]
+        self.all_bosses = [Mano("mano", self.map_label), KingSlime("king_slime", self.map_label), Balrog("balrog", self.map_label), Pianus('pianus', self.map_label), PinkBean('pink_bean', self.map_label)]
         self.boss = True
         self.next_round_after_boss = False
 
         self.money = 100000
-        self.background_img = pygame.image.load(os.path.join("images", "map_4_bg.png"))
+        self.background_img = pygame.image.load(os.path.join("images", self.map_label + "_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
         self.width = GameConstants.DIMENSIONS['game'][0]
@@ -74,7 +75,7 @@ class Game:
         # Testing purposes
         self.clicks = []
 
-        self.path = GameConstants.PATH['map_4'][0]
+        self.path = GameConstants.PATH[self.map_label][0]
 
         # Spawning enemies
         self.timer = time.time()
@@ -88,7 +89,12 @@ class Game:
         self.tower_clicked = None
 
         # Adding items to the shop
-        self.shop_menu = ShopMenu(side_bar_img.get_width() // 2 - 10, 115, side_bar_img)
+        if self.map_label != "map_2":
+            self.shop_menu = ShopMenu(side_bar_img.get_width() // 2 - 10, 115, side_bar_img)
+
+        else:
+            self.shop_menu = ShopMenu(self.width - side_bar_img.get_width() // 2 + 5, 115, side_bar_img)
+
         self.shop_menu.add_button("bowman", buy_archer, 400)
         self.shop_menu.add_button("crossbowman", buy_crossbowman, 600)
         self.shop_menu.add_button("support_damage", buy_support_dmg, 800)
@@ -132,17 +138,17 @@ class Game:
 
         if sum(self.cur_wave_amounts):
             ENEMY_WAVES_MONSTER_NAMES = {
-                0: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
-                1: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
-                2: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
-                3: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4')],
-                4: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
-                5: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
-                6: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
-                7: [Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8')],
-                8: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')],
-                9: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')],
-                10: [Monster_1('monster_1'), Monster_2('monster_2'), Monster_3('monster_3'), Monster_4('monster_4'), Monster_5('monster_5'), Monster_6('monster_6'), Monster_7('monster_7'), Monster_8('monster_8'), Monster_9('monster_9'), Monster_10('monster_10')]
+                0: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                1: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                2: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                3: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                4: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                5: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                6: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                7: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                8: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)],
+                9: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)],
+                10: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)]
             }
             for i, amount in enumerate(self.cur_wave_amounts):
                 if amount:
@@ -167,7 +173,7 @@ class Game:
         except Exception as error:  
             print(error + " " + "Invalid Name")
 
-    def run(self):
+    def run_game(self):
         ongoing = True
         clock = pygame.time.Clock()
 
@@ -200,7 +206,7 @@ class Game:
             pos = pygame.mouse.get_pos()
 
             if self.drag_object:
-                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH['map_4']) < 80:
+                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH[self.map_label]) < 80:
                     self.invalid_tower_path_placement = (self.drag_object, (self.drag_object.x, self.drag_object.y))
                 else:
                     self.invalid_tower_path_placement = None
@@ -244,7 +250,7 @@ class Game:
 
                     elif not self.drag_object:
                         # Checking for the current state of the game (Paused or play)
-                        if self.game_state_button.click(pos[0], pos[1]):
+                        if self.game_state_button.click(pos[0], pos[1]) and not self.enemies:
                             self.pause_game = not self.pause_game
                             self.game_state_button.switch_img()
 
@@ -259,8 +265,8 @@ class Game:
                             if self.money >= self.shop_menu.get_it_cost(main_menu_item_name):
                                 self.buy_tower(main_menu_item_name)
                       
-                        self.clicks.append(pos)
-                        print(self.clicks)
+                        # self.clicks.append(pos)
+                        # print(self.clicks)
                         
                         #Currently pressing on an item on the menu
                         if self.tower_clicked:   
@@ -422,5 +428,5 @@ class Game:
 
         pygame.display.update()
 
-g = Game()
-g.run()
+# g = Game(self.window)
+# g.run_game()

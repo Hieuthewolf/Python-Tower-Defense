@@ -61,7 +61,7 @@ class ArcherTowerFar(Tower):
             else:
                 padding = - archer.get_width() + 15
 
-            window.blit(archer, ((self.x + padding + 5), (self.y - archer.get_height() - 20)))
+            window.blit(archer, ((self.x + padding + 5), (self.y - archer.get_height() - 25)))
 
             if self.arrow_hit_target[0]:
                 enemy = self.arrow_hit_target[1]
