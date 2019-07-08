@@ -181,12 +181,11 @@ class Tower(GameObjects):
                 if closest_to_A[0] != point_A[0]:
                     m = (closest_to_A[1] - point_A[1]) / (closest_to_A[0] - point_A[0])
                 else:
-                    m = 0
+                    m = 2
 
                 b = point_A[1] - m * point_A[0]
 
                 closest_distance = abs(-m * self.x + self.y - b) / math.sqrt((-m) ** 2 + 1)
                 min_distance_to_line = min(closest_distance, min_distance_to_line)
         
-            print(min_distance_to_line, point_A, closest_to_A)
         return min_distance_to_line

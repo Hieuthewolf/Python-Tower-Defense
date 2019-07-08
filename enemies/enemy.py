@@ -7,13 +7,12 @@ import random
 
 class Enemy(GameObjects):
     def __init__(self, name):
-        super().__init__(name, GameConstants.PATH['map_2'][0][0])
+        super().__init__(name, GameConstants.PATH['map_4'][0][0])
         # Each enemy has access to the game path
-        if len(GameConstants.PATH['map_2']) == 2:
-            randomized_path = random.randint(0, 1)
-            self.path = GameConstants.PATH['map_2'][randomized_path]
+        if len(GameConstants.PATH['map_4']) == 2: #Length of 2 means two possible routes
+            self.path = GameConstants.PATH['map_4'][random.randint(0, 1)]
         else:
-            self.path = GameConstants.PATH['map_2'][0]
+            self.path = GameConstants.PATH['map_4'][0] #Only one direct path to exit
 
         # Enemy coordinates
         self.x = self.coord[0]
@@ -49,7 +48,7 @@ class Enemy(GameObjects):
             self.slow_down_move_animation = EnemyConstants.SLOW_ENEMY_MOVE_ANIMATION_BUFFER[name] # For bosses
             self.slow_down_death_animation = EnemyConstants.SLOW_ENEMY_DEATH_ANIMATION_BUFFER[name]
 
-        # Flips the images based on the direction they're facing
+        # Flips the images based on the unit_vector they're facing
         self.flipped = False
         self.alter_image = None
     
@@ -67,7 +66,7 @@ class Enemy(GameObjects):
 
     def move(self):
         """
-        Moves our enemy along the path while also accounting for the directions that enemies face
+        Moves our enemy along the path while also accounting for the unit_vectors that enemies face
         Will return true if the next coordinate is a valid coordinate in the path and false if the enemy is beyond the path goal
         :return: booleans
         """ 
@@ -86,18 +85,18 @@ class Enemy(GameObjects):
 
         vector = ((x2 - x1), (y2 - y1))
         length = calculate_distance((x1, y1), (x2, y2))
-        direction = (move_speed * vector[0] / length,  move_speed * vector[1] / length)
+        unit_vector = (move_speed * vector[0] / length,  move_speed * vector[1] / length) #Determines direction as well
 
-        move_x, move_y = ((self.x + direction[0]), (self.y + direction[1]))
+        move_x, move_y = ((self.x + unit_vector[0]), (self.y + unit_vector[1]))
 
-        if direction[0] < 0 and not self.flipped:
+        if unit_vector[0] < 0 and not self.flipped:
             self.flipped = True
             for x, img in enumerate(self.images):
                 self.images[x] = pygame.transform.flip(img, True, False) #Flips moving sprite animations
             for x, img in enumerate(self.death): 
                 self.death[x] = pygame.transform.flip(img, True, False) #Flips death sprite animations
         
-        elif direction[0] >= 0 and self.flipped:
+        elif unit_vector[0] >= 0 and self.flipped:
             self.flipped = False
             for x, img in enumerate(self.images):
                 self.images[x] = pygame.transform.flip(img, True, False)
@@ -107,14 +106,15 @@ class Enemy(GameObjects):
         self.x = move_x
         self.y = move_y
 
-        moving_up = (direction[1] < 0)
-        moving_right = (direction[0] > 0)
-        no_delta_x = (direction[0] == 0)
+        moving_up = (unit_vector[1] <= 0)
+        moving_right = (unit_vector[0] > 0)
+        no_delta_x = (unit_vector[0] == 0)
+        no_delta_y = (unit_vector[1] == 0) 
 
         if moving_right:
             if moving_up:
                 if self.x >= x2:
-                    self.currentPathPos += 1
+                    self.currentPathPos += 1   
             else: #moving down
                 if self.x >= x2:
                     self.currentPathPos += 1
@@ -188,7 +188,7 @@ class Enemy(GameObjects):
 class BossEnemy(Enemy):
     def __init__(self, name):
         super().__init__(name)
-        self.flipped = True #Flips the enemy if not facing the correct direction
+        self.flipped = True #Flips the enemy if not facing the correct unit_vector
 
     def health_bar(self, window):
         """

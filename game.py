@@ -65,7 +65,7 @@ class Game:
         self.next_round_after_boss = False
 
         self.money = 100000
-        self.background_img = pygame.image.load(os.path.join("images", "map_2_bg.png"))
+        self.background_img = pygame.image.load(os.path.join("images", "map_4_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
 
         self.width = GameConstants.DIMENSIONS['game'][0]
@@ -74,7 +74,7 @@ class Game:
         # Testing purposes
         self.clicks = []
 
-        self.path = GameConstants.PATH['map_2'][0]
+        self.path = GameConstants.PATH['map_4'][0]
 
         # Spawning enemies
         self.timer = time.time()
@@ -200,7 +200,7 @@ class Game:
             pos = pygame.mouse.get_pos()
 
             if self.drag_object:
-                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH['map_2']) < 75:
+                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH['map_4']) < 80:
                     self.invalid_tower_path_placement = (self.drag_object, (self.drag_object.x, self.drag_object.y))
                 else:
                     self.invalid_tower_path_placement = None
@@ -227,7 +227,7 @@ class Game:
                         self.drag_object = None
                         continue
 
-                    if self.drag_object and not self.invalid_tower_placement:
+                    if self.drag_object and not self.invalid_tower_placement and not self.invalid_tower_path_placement:
                         self.drag_object.coord = (pos[0], pos[1])
                         if self.drag_object.name in TowerConstants.ATT_TOWER_NAMES:
                             self.archer_towers.append(self.drag_object)
@@ -350,8 +350,8 @@ class Game:
         for p in self.clicks:
             pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
 
-        # for p in self.path:
-        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
+        for p in self.path:
+            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
 
         if self.tower_selected:
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))
