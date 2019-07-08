@@ -44,28 +44,40 @@ class ArcherTowerFar(Tower):
         self.arrow_hit_target = (None, None)
 
     def draw(self, window):
+        """
+        Draws archers on top of archer towers and the tower itself
+        @param (SURFACE) window: surface for rendering the drawing
+
+        --> return: None
+        """
         super().draw(window)
 
-        archer = self.archer_images[self.archer_count // 3] 
+        if not self.level_up_animation:
+            archer = self.archer_images[self.archer_count // 3] 
 
-        #Padding so that the archer stays static when switching directions
-        if not self.flipped:
-            padding = -25
-        else:
-            padding = - archer.get_width() + 15
+            #Padding so that the archer stays static when switching directions
+            if not self.flipped:
+                padding = -25
+            else:
+                padding = - archer.get_width() + 15
 
-        window.blit(archer, ((self.x + padding), (self.y - archer.get_height() - 30)))
+            window.blit(archer, ((self.x + padding + 5), (self.y - archer.get_height() - 20)))
 
-        if self.arrow_hit_target[0]:
-            enemy = self.arrow_hit_target[1]
-            window.blit(arrow, (enemy.x, enemy.y))
+            if self.arrow_hit_target[0]:
+                enemy = self.arrow_hit_target[1]
+                window.blit(arrow, (enemy.x, enemy.y))
             
 
     def attack(self, enemies, dead_enemies):
         """
-        attacks enemy in enemy list, modifying the list
-        :param enemies: list of enemies
-        :return: None
+        Attacks enemies in enemy list and modifies it and adds the enemies to dead_enemies list if they die
+        Also syncs up the animation of the archers to that of the depletion of enemy HP
+        Lastly, syncs up the direction that the archers face based on which side the enemies are on 
+
+        @param (LIST) enemies: list of current enemies on the field
+        @Param (SET) dead_enemies: set of dead enemies after going down to 0 hp
+
+        --> return: Int (money currency)
         """
         enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
         self.enemy_in_range = True if enemies_in_range else False
@@ -122,6 +134,9 @@ archer_tower_short = import_images_numbers("images/towers/archer_towers/archer_2
 archers_short = import_images_numbers("images/towers/archer_towers/archer_top_2/", 43, 49)
 
 class ArcherTowerShort(ArcherTowerFar):
+    """
+    Inherits from ArcherTowerFar because the only attributes that change are the tower images, archer images, damage, and range
+    """
     def __init__(self, name, coord):
         super().__init__(name, coord)
         # Loading tower and archer images

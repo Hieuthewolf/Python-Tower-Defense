@@ -41,7 +41,7 @@ class Tower(GameObjects):
 
         # Clicking on a tower
         self.selected = False
-        
+
         # Tower images
         self.tower_images = []
 
@@ -160,23 +160,33 @@ class Tower(GameObjects):
 
         --> return: Float
         """
-        game_path = path[:]
-        game_path.sort(key = lambda coord: calculate_distance(self, coord))
-        point_A = game_path[0] # Closest point out of all the points on the path to to the tower
+        min_distance_to_line = float("inf")
+        for p in path:
+            game_path = p[:]
 
-        try:
-            point_after_A = path[path.index(point_A) + 1]
-            point_before_A = path[path.index(point_A) - 1]
-            closest_to_A = min(point_after_A, point_before_A, key = lambda point: calculate_distance(point_A, point))
-        except:
-            if path.index(point_A) == 0:
-                closest_to_A = path[path.index(point_A) + 1]
-            
-            elif path.index(point_A) == len(path) - 1:
-                closest_to_A = path[path.index(point_A) - 1]
-        finally:
-            m = (closest_to_A[1] - point_A[1]) / (closest_to_A[0] - point_A[0])
-            b = point_A[1] - m * point_A[0]
+            game_path.sort(key = lambda coord: calculate_distance(self, coord))
+            point_A = game_path[0] # Closest point out of all the points on the path to to the tower
 
-            closest_distance = abs(-m * self.x + self.y - b) / math.sqrt((-m) ** 2 + 1)
-            return closest_distance
+            try:
+                point_after_A = p[p.index(point_A) + 1]
+                point_before_A = p[p.index(point_A) - 1]
+                closest_to_A = min(point_after_A, point_before_A, key = lambda point: calculate_distance(point_A, point))
+            except:
+                if p.index(point_A) == 0:
+                    closest_to_A = p[p.index(point_A) + 1]
+                
+                elif p.index(point_A) == len(p) - 1:
+                    closest_to_A = p[p.index(point_A) - 1]
+            finally:
+                if closest_to_A[0] != point_A[0]:
+                    m = (closest_to_A[1] - point_A[1]) / (closest_to_A[0] - point_A[0])
+                else:
+                    m = 0
+
+                b = point_A[1] - m * point_A[0]
+
+                closest_distance = abs(-m * self.x + self.y - b) / math.sqrt((-m) ** 2 + 1)
+                min_distance_to_line = min(closest_distance, min_distance_to_line)
+        
+            print(min_distance_to_line, point_A, closest_to_A)
+        return min_distance_to_line

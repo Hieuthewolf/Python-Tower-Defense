@@ -40,6 +40,13 @@ class FireTower(Tower):
         self.locked = False
         
     def draw(self, window):
+        """
+        Draws magic towers as based on their specific level and animate the attack animation to sync up with enemies
+        @param (SURFACE) window: surface for rendering the drawing
+
+        --> return: None
+        """
+
         super().draw(window)
 
         fire_flame = self.fire_flame_images[self.fire_flame_count // 4]

@@ -65,16 +65,16 @@ class Game:
         self.next_round_after_boss = False
 
         self.money = 100000
-        self.background_img = pygame.image.load(os.path.join("images", "bg.png"))
+        self.background_img = pygame.image.load(os.path.join("images", "map_2_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
-
-        # self.path = createPathLayout(Constants.PATH_CORNERS)
 
         self.width = GameConstants.DIMENSIONS['game'][0]
         self.height = GameConstants.DIMENSIONS['game'][1]
 
         # Testing purposes
-        self.clicks = GameConstants.PATH
+        self.clicks = []
+
+        self.path = GameConstants.PATH['map_2'][0]
 
         # Spawning enemies
         self.timer = time.time()
@@ -116,7 +116,7 @@ class Game:
         self.music = pygame.mixer.music
         self.music.load("maple.mp3")
         self.music.set_volume(0.5)
-        self.music.play(-1)
+        # self.music.play(-1)
         self.play_sound = True
         self.soundBtn = GameStateButton(play_music, pause_music, self.width - play_music.get_width() - play_round.get_width(), wave.get_height() - 5)
         self.soundBtn.switch_img()
@@ -200,7 +200,7 @@ class Game:
             pos = pygame.mouse.get_pos()
 
             if self.drag_object:
-                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH) < 75:
+                if self.drag_object.get_closest_distance_to_path(GameConstants.PATH['map_2']) < 75:
                     self.invalid_tower_path_placement = (self.drag_object, (self.drag_object.x, self.drag_object.y))
                 else:
                     self.invalid_tower_path_placement = None
@@ -259,8 +259,8 @@ class Game:
                             if self.money >= self.shop_menu.get_it_cost(main_menu_item_name):
                                 self.buy_tower(main_menu_item_name)
                       
-                        # self.clicks.append(pos)
-                        # print(self.clicks)
+                        self.clicks.append(pos)
+                        print(self.clicks)
                         
                         #Currently pressing on an item on the menu
                         if self.tower_clicked:   
@@ -347,8 +347,11 @@ class Game:
         self.window.blit(self.background_img, (0, 0))
 
         # Testing purposes of mouse movement
-        # for p in self.clicks:
-        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)   
+        for p in self.clicks:
+            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
+
+        # for p in self.path:
+        #     pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
 
         if self.tower_selected:
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))

@@ -3,12 +3,17 @@ from constants import GameConstants, EnemyConstants
 from usefulFunctions import calculate_distance
 import pygame
 import math
+import random
 
 class Enemy(GameObjects):
     def __init__(self, name):
-        super().__init__(name, GameConstants.PATH[0])
+        super().__init__(name, GameConstants.PATH['map_2'][0][0])
         # Each enemy has access to the game path
-        self.path = GameConstants.PATH
+        if len(GameConstants.PATH['map_2']) == 2:
+            randomized_path = random.randint(0, 1)
+            self.path = GameConstants.PATH['map_2'][randomized_path]
+        else:
+            self.path = GameConstants.PATH['map_2'][0]
 
         # Enemy coordinates
         self.x = self.coord[0]
@@ -85,12 +90,10 @@ class Enemy(GameObjects):
 
         move_x, move_y = ((self.x + direction[0]), (self.y + direction[1]))
 
-
         if direction[0] < 0 and not self.flipped:
             self.flipped = True
             for x, img in enumerate(self.images):
                 self.images[x] = pygame.transform.flip(img, True, False) #Flips moving sprite animations
-                self.x -= 10
             for x, img in enumerate(self.death): 
                 self.death[x] = pygame.transform.flip(img, True, False) #Flips death sprite animations
         
@@ -104,23 +107,33 @@ class Enemy(GameObjects):
         self.x = move_x
         self.y = move_y
 
-        moving_up = (direction[1] <= 0)
-        moving_right = (direction[0] >= 0)
+        moving_up = (direction[1] < 0)
+        moving_right = (direction[0] > 0)
+        no_delta_x = (direction[0] == 0)
 
         if moving_right:
             if moving_up:
-                if self.x >= x2 and self.y <= y2:
+                if self.x >= x2:
                     self.currentPathPos += 1
             else: #moving down
-                if self.x >= x2 and self.y >= y2:
+                if self.x >= x2:
+                    self.currentPathPos += 1
+
+        # Constantly moving up or down in a vertical line with no delta in x coordinate
+        elif no_delta_x:
+            if moving_up:
+                if self.y  <= y2:
+                    self.currentPathPos += 1
+            else:
+                if self.y >= y2:
                     self.currentPathPos += 1
 
         else:
             if moving_up:
-                if self.x <= x2 and self.y <= y2:
+                if self.x <= x2:
                     self.currentPathPos += 1
             else: #moving down
-                if self.x <= x2 and self.y >= y2:
+                if self.x <= x2:
                     self.currentPathPos += 1
 
         return True
