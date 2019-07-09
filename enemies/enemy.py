@@ -20,7 +20,6 @@ class Enemy(GameObjects):
 
         # Enemy characteristics
         self.currentPathPos = 0
-        # self.velocity = Constants.ENEMY_SPEED[name]
         
         # Animating/Modifying appearance of enemies
         self.images = EnemyConstants.ENEMY_MOVING_SPRITE_IMAGES[name][:]

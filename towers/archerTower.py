@@ -8,7 +8,6 @@ from usefulFunctions import import_images_numbers, calculate_distance
 
 # Archer tower images
 archer_tower_far = import_images_numbers("images/towers/archer_towers/archer_1/", 7, 10, (80, 80))
-arrow = pygame.transform.scale(pygame.image.load(os.path.join("images/towers/archer_towers", "arrow.png")), (25, 25))
 
 # Archers images
 archers_far = import_images_numbers("images/towers/archer_towers/archer_top_1/", 37, 43)
@@ -62,12 +61,7 @@ class ArcherTowerFar(Tower):
                 padding = - archer.get_width() + 15
 
             window.blit(archer, ((self.x + padding + 5), (self.y - archer.get_height() - 25)))
-
-            if self.arrow_hit_target[0]:
-                enemy = self.arrow_hit_target[1]
-                window.blit(arrow, (enemy.x, enemy.y))
             
-
     def attack(self, enemies, dead_enemies):
         """
         Attacks enemies in enemy list and modifies it and adds the enemies to dead_enemies list if they die
@@ -98,9 +92,6 @@ class ArcherTowerFar(Tower):
             #Decrements health bar of enemies only when the archer has finished its animation
             if self.archer_count == 12: 
                 target.health -= self.damage
-
-            if self.archer_count > 12:
-                self.arrow_hit_target = (True, target)
 
             if target.health <= 0:
                 self.last_arrow_animation_count += 1

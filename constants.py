@@ -10,11 +10,11 @@ class GameConstants:
     DIMENSIONS = {
         'game': (1350, 750),
         'path': (35, 35),
-        'monster': (80, 80),
+        'monster': (70, 70),
         'boss': (150, 150),
-        'att_tower': (80, 145), # The additional height is due to the archer on top and extra padding for menu
+        'att_tower': (80, 135), # The additional height is due to the archer on top and extra padding for menu
         'supp_tower': (80, 105), # The additional height helps to pad the popup menu (give or take 25)
-        'magic_tower': (80, 175), # The additional height is due to the orb classifier on top and extra padding for menu
+        'magic_tower': (80, 110), # The additional height is due to the orb classifier on top and extra padding for menu
         'menu': (130, 70),
     }
 
@@ -158,16 +158,16 @@ class EnemyConstants:
     # Collection of all death animation sprite images
     ENEMY_DEATH_SPRITE_IMAGES = {
         # Monsters 
-        'monster_1': import_images_name("images/enemies/monster/monster_1", "9_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_2': import_images_name("images/enemies/monster/monster_2", "1_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_3': import_images_name("images/enemies/monster/monster_3", "7_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_4': import_images_name("images/enemies/monster/monster_4", "10_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_5': import_images_name("images/enemies/monster/monster_5", "2_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_6': import_images_name("images/enemies/monster/monster_6", "8_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_7': import_images_name("images/enemies/monster/monster_7", "3_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_8': import_images_name("images/enemies/monster/monster_8", "6_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_9': import_images_name("images/enemies/monster/monster_9", "4_enemies_1_die_0", 0, 20, (80, 80)),
-        'monster_10': import_images_name("images/enemies/monster/monster_10", "5_enemies_1_die_0", 0, 20, (80, 80)),
+        'monster_1': import_images_name("images/enemies/monster/monster_1", "9_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_2': import_images_name("images/enemies/monster/monster_2", "1_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_3': import_images_name("images/enemies/monster/monster_3", "7_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_4': import_images_name("images/enemies/monster/monster_4", "10_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_5': import_images_name("images/enemies/monster/monster_5", "2_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_6': import_images_name("images/enemies/monster/monster_6", "8_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_7': import_images_name("images/enemies/monster/monster_7", "3_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_8': import_images_name("images/enemies/monster/monster_8", "6_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_9': import_images_name("images/enemies/monster/monster_9", "4_enemies_1_die_0", 0, 20, (70, 70)),
+        'monster_10': import_images_name("images/enemies/monster/monster_10", "5_enemies_1_die_0", 0, 20, (70, 70)),
 
         # Bosses
         'mano': import_images_name("images/enemies/boss/mano", "die_0", 1, 10, (150, 150)),

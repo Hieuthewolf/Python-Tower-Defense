@@ -7,7 +7,7 @@ import os
 
 import math
 
-menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "menu.png")), (145 , 110))
+menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/menu", "menu.png")), (145 , 90))
 upgrade_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "upgrade.png")), (55, 55))
 sell_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "undo.png")), (55, 55))
 

@@ -24,6 +24,8 @@ class GameObjects:
         else:
             self.dimensions = GameConstants.DIMENSIONS['boss'] #bosses
 
+        self.width, self.height = self.dimensions[0], self.dimensions[1]
+
     def does_collides(self, other_object):
         """
         Detects if one object collides with another (for now the radial distance is hardcoded as 90 --> good baseline)
