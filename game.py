@@ -22,6 +22,14 @@ from towers.magicTower import FireTower, IceTower
 #Importing main menu
 from menu.menu import ShopMenu, GameStateButton
 
+#Importing function to grab explosion images
+from usefulFunctions import import_images_num_extended
+
+from screens.ending_screen import EndingScreen
+
+# Darken bg filter
+dark_bg = pygame.image.load(os.path.join("images/screens", "dark.png")).convert_alpha()
+
 #Game lives and money assets
 life_image = pygame.image.load(os.path.join("images/lives", "heart.png"))
 crystal_image = pygame.image.load(os.path.join("images/upgrade", "crystal_3.png"))
@@ -45,6 +53,9 @@ buy_support_range = pygame.transform.scale(pygame.image.load(os.path.join("image
 buy_magic_fire = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "fire.png")), (60, 60))
 buy_magic_ice = pygame.transform.scale(pygame.image.load(os.path.join("images/shop", "ice.png")), (60, 60))
 
+# End game explosion
+explosion = import_images_num_extended("images/screens/", 1, 51, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
+
 #Adding music
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 
@@ -52,6 +63,10 @@ class Game:
     def __init__(self, window, map_label):
         self.window = window
         self.map_label = map_label
+
+        self.width = GameConstants.DIMENSIONS['game'][0]
+        self.height = GameConstants.DIMENSIONS['game'][1]
+
 
         # Tower variables
         self.archer_towers = []
@@ -68,9 +83,7 @@ class Game:
         self.money = 100000
         self.background_img = pygame.image.load(os.path.join("images", self.map_label + "_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
-
-        self.width = GameConstants.DIMENSIONS['game'][0]
-        self.height = GameConstants.DIMENSIONS['game'][1]
+        self.darken_background =  pygame.transform.scale(dark_bg, (self.width, self.height))
 
         # Testing purposes
         self.clicks = []
@@ -82,7 +95,7 @@ class Game:
         
         # Lives and life font
         self.font = game_font
-        self.lives = 10
+        self.lives = 1
 
         # Selecting tower logistics
         self.tower_selected = None
@@ -126,6 +139,12 @@ class Game:
         self.play_sound = True
         self.soundBtn = GameStateButton(play_music, pause_music, self.width - play_music.get_width() - play_round.get_width(), wave.get_height() - 5)
         self.soundBtn.switch_img()
+        
+        # Animating the explosion to indicate game over
+        self.game_over = False
+        self.game_over_animation_count = 0
+        self.explosion_images = explosion
+        self.ending_screen = None
 
         if self.tower_selected:
             self.tower_radius_surface = pygame.Surface((self.tower_selected.range * 4, self.tower_selected.range * 4), pygame.SRCALPHA, 32)
@@ -340,10 +359,16 @@ class Game:
                     attack_towers = self.archer_towers[:] + self.magic_towers[:]
                     t.support(attack_towers)
 
-                # Terminating Game Over condition
-                if self.lives <= 0:
-                    print("Game Over")
+            if self.lives <= 0:
+                self.pause_game = True
+                self.game_over = True
+                if self.ending_screen:
                     ongoing = False
+                    ending_screen = EndingScreen(self.window, "defeat")
+                    if ending_screen.run_game() == 'restart':
+                        return 'restart'
+                    # ending_screen.run_game()
+                    del ending_screen
 
             self.draw()
 
@@ -351,6 +376,13 @@ class Game:
 
     def draw(self):
         self.window.blit(self.background_img, (0, 0))
+
+        if self.game_over:
+            self.window.blit(self.darken_background, (0, 0))
+            self.window.blit(self.explosion_images[self.game_over_animation_count], (0, 0))
+            self.game_over_animation_count += 1
+            if self.game_over_animation_count == len(self.explosion_images):
+                self.ending_screen = True
 
         # Testing purposes of mouse movement
         for p in self.clicks:

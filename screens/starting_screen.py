@@ -4,16 +4,14 @@ from game import Game
 
 # Initializing pygame
 pygame.init()
-game_font = pygame.font.SysFont('comicsans', 76)
-start_btn = pygame.image.load(os.path.join("images", "button_play.png")).convert_alpha()
-dark_bg = pygame.image.load(os.path.join("images", "dark.png")).convert_alpha()
+start_btn = pygame.image.load(os.path.join("images/screens", "button_play.png")).convert_alpha()
+dark_bg = pygame.image.load(os.path.join("images/screens", "dark.png")).convert_alpha()
 
 class StartingScreen:
     def __init__(self, window):
         self.width, self.height = 1350, 750 
         self.window = window
 
-        self.font = game_font
         self.btn = (self.width/2 - start_btn.get_width()/2, self.height // 2, start_btn.get_width(), start_btn.get_height())
 
         self.map_1 = pygame.transform.scale(pygame.image.load(os.path.join("images", "map_1_bg.png")), (self.width // 2, (self.height) // 2))
@@ -21,7 +19,6 @@ class StartingScreen:
         self.map_3 = pygame.transform.scale(pygame.image.load(os.path.join("images", "map_3_bg.png")), (self.width // 2, (self.height) // 2))
         self.map_4 = pygame.transform.scale(pygame.image.load(os.path.join("images", "map_4_bg.png")), (self.width // 2, (self.height) // 2))
 
-        self.background_darken = pygame.transform.scale(dark_bg, (self.width, self.height))
         self.map_background_darken = pygame.transform.scale(dark_bg, (self.width // 2, self.map_1.get_height()))
 
         self.map_darken = [True, True, True, True] #Undarkens the appropriate map if selected
@@ -93,7 +90,9 @@ class StartingScreen:
                         if self.height // 2 - start_btn.get_height() // 2 <= y <= self.height // 2 + start_btn.get_height() // 2:
                             if self.selected:       
                                 game = Game(self.window, self.selected)
-                                game.run_game()
+                                if game.run_game() == 'restart':
+                                    self.map_darken[int(self.selected[4]) - 1] = True
+                                    self.selected = None
                                 del game
 
             self.draw()

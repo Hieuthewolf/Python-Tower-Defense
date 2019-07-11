@@ -53,7 +53,8 @@ class Enemy(GameObjects):
     
         # For freezing logistics
         self.affected = False
-        self.move_speed = 2
+        self.default_move_speed = 20
+        self.move_speed = self.default_move_speed
         
     def die(self, window):
         if self.dead:
@@ -69,8 +70,6 @@ class Enemy(GameObjects):
         Will return true if the next coordinate is a valid coordinate in the path and false if the enemy is beyond the path goal
         :return: booleans
         """ 
-        move_speed = self.move_speed
-
         self.animation_count += 1
         if self.animation_count >= len(self.images) * self.slow_down_move_animation:
             self.animation_count = 0
@@ -84,7 +83,7 @@ class Enemy(GameObjects):
 
         vector = ((x2 - x1), (y2 - y1))
         length = calculate_distance((x1, y1), (x2, y2))
-        unit_vector = (move_speed * vector[0] / length,  move_speed * vector[1] / length) #Determines direction as well
+        unit_vector = (self.move_speed * vector[0] / length, self.move_speed * vector[1] / length) #Determines direction as well
 
         move_x, move_y = ((self.x + unit_vector[0]), (self.y + unit_vector[1]))
 
@@ -136,7 +135,7 @@ class Enemy(GameObjects):
                     self.currentPathPos += 1
 
         return True
-        
+
 
     def draw(self, window):
         """
@@ -182,8 +181,8 @@ class Enemy(GameObjects):
                     break
 
         if not_affected:
-            self.move_speed = 2
-            
+            self.move_speed = self.default_move_speed
+
 class BossEnemy(Enemy):
     def __init__(self, name, map_label):
         super().__init__(name, map_label)

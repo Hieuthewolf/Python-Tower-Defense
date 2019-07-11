@@ -11,7 +11,11 @@ menu_background = pygame.transform.scale(pygame.image.load(os.path.join("images/
 upgrade_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "upgrade.png")), (55, 55))
 sell_button = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "undo.png")), (55, 55))
 
+kill_count_table = pygame.transform.scale(pygame.image.load(os.path.join("images/upgrade", "empty_table.png")), (100, 30))
+
 level_up = import_images_numbers("images/level_up/", 1, 25, (300, 300))
+
+game_font = pygame.font.SysFont('comicsans', 24)
 
 class Tower(GameObjects):
     """
@@ -68,6 +72,10 @@ class Tower(GameObjects):
         # Padding for clicking purposes
         self.extra_padding = 10
 
+        # Keeps track of kill count
+        self.kill_count = 0
+        self.font = game_font
+
     def draw(self, window):
         """
         Draws the tower, menu, and level-up animation upon condition
@@ -77,6 +85,9 @@ class Tower(GameObjects):
         """
         if self.selected:
             self.menu.draw(window)  #Drawing menu
+            window.blit(kill_count_table, (self.x + self.width // 2 - 15, self.y - self.height // 2 + 35))
+            kills = self.font.render(str(self.kill_count) + " Kills", 1, (255, 255, 255))
+            window.blit(kills, (self.x + self.width // 2 + 5, self.y - self.height // 2 + 43))
 
         tower_image = self.tower_images[self.level-1]
 

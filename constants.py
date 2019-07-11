@@ -197,12 +197,12 @@ class TowerConstants:
     }
 
     UPGRADE_COST = {
-        'bowman': [2750, 5500, "MAX"],
-        'crossbowman': [1000, 5000, "MAX"],
-        'support_damage': [350, 900, "MAX"],
-        'support_range': [500, 1250, "MAX"],
-        'magic_fire': [500, 1250, "MAX"],
-        'magic_ice': [500, 1250, "MAX"],
+        'bowman': [2250, 5500, "MAX"],
+        'crossbowman': [2000, 5000, "MAX"],
+        'support_damage': [750, 1950, "MAX"],
+        'support_range': [900, 2150, "MAX"],
+        'magic_fire': [2750, 6500, "MAX"],
+        'magic_ice': [2750, 6500, "MAX"],
     }
 
     ORIGINAL_PRICE = {

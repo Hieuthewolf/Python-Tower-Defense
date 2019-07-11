@@ -95,7 +95,8 @@ class ArcherTowerFar(Tower):
 
             if target.health <= 0:
                 self.last_arrow_animation_count += 1
-                if self.last_arrow_animation_count >= 4:
+                if self.last_arrow_animation_count >= 2:
+                    self.kill_count += 1
                     target.dead = True
                     dead_enemies.add(target)
                     enemies.remove(target)

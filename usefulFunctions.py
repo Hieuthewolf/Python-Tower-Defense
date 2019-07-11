@@ -72,6 +72,33 @@ def import_images_name(img_directory, name_trail, starting_bound, ending_bound, 
 
     return images
 
+def import_images_num_extended(img_directory, starting_bound, ending_bound, scaled_dim = None):
+    """
+    Returns all the sprite images as a list 
+    @param (STR) img_directory: the path in the OS to get to the image --> ex: "images/towers/archer_towers/archer_1/" (str)
+    @param (INT) starting_bound: the starting bound for the first number associated with the image --> ex: 0001 (int)
+    @param (INT) ending_bound: the ending bound for the last number associated with the image + 1 (int)
+    @param (TUPLE) scaled_dim = a (width, height) tuple to indicate desired scaled dimensions --> ex: (64, 64) (tuple)
+
+    --> return: List 
+    """
+    images = []
+
+    for i in range(starting_bound, ending_bound):
+        num_string = str(i)
+        if i < 10:
+            num_string = "000" + num_string
+        else:
+            num_string = "00" + num_string
+
+        img = pygame.image.load(os.path.join(img_directory, num_string + ".png"))
+
+        if scaled_dim:
+            images.append(pygame.transform.scale(img, scaled_dim))
+        else:
+            images.append(img)
+
+    return images
 
 
 

@@ -94,6 +94,7 @@ class FireTower(Tower):
                         e.health -= self.damage
 
                         if e.health <= 0:
+                            self.kill_count += 1
                             e.dead = True
                             dead_enemies.add(e)
                             enemies.remove(e)
