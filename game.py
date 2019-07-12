@@ -3,6 +3,18 @@ import os
 import time
 import random
 
+# For leaderboard stuff
+import pymongo
+from pymongo import MongoClient
+
+cluster = MongoClient("mongodb+srv://hieuthewolf:hieutrung123@cluster0-qcx63.mongodb.net/test?retryWrites=true&w=majority")
+db = cluster["Python_Tower_Defense"]
+collection = db["high_scores"]
+
+post = {"_id": 4, "name": "Hieu"}
+
+collection.insert_one(post)
+
 #Initializing pygame
 pygame.init()
 
