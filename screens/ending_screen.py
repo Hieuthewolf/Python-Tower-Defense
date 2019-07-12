@@ -13,19 +13,27 @@ button_menu = pygame.image.load(os.path.join("images/screens", "button_menu.png"
 empty_table =  pygame.image.load(os.path.join("images/screens", "table.png")).convert_alpha()
 
 class EndingScreen:
-    def __init__(self, window, game_status):
-        self.width, self.height = 1350, 750 
+    def __init__(self, window, game_status, username):
         self.window = window
+        self.game_status = game_status
+        self.username = username
+        
+        # Game dimensions
+        self.width, self.height = 1350, 750 
 
+        # Background images
         self.background = pygame.transform.scale(background, (self.width, self.height))
         self.background_darken = pygame.transform.scale(darken_background, (self.width, self.height))
+
+        # Empty table for leaderboard
         self.empty_table = pygame.transform.scale(empty_table, (500, 650))
 
+        # Indicating victory or defeat
         self.header_win = pygame.transform.scale(header_win, (325, 130))
         self.header_lose = pygame.transform.scale(header_lose, (325, 130))
 
+        # To take back to main menu
         self.button_menu = pygame.transform.scale(button_menu, (120, 120))
-        self.game_status = game_status
 
     def draw(self):
         # Bliting the map

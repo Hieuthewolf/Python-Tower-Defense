@@ -11,10 +11,6 @@ cluster = MongoClient("mongodb+srv://hieuthewolf:hieutrung123@cluster0-qcx63.mon
 db = cluster["Python_Tower_Defense"]
 collection = db["high_scores"]
 
-post = {"_id": 4, "name": "Hieu"}
-
-collection.insert_one(post)
-
 #Initializing pygame
 pygame.init()
 
@@ -72,13 +68,14 @@ explosion = import_images_num_extended("images/screens/", 1, 51, (GameConstants.
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 class Game:
-    def __init__(self, window, map_label):
+    def __init__(self, window, map_label, username):
         self.window = window
         self.map_label = map_label
+        self.username = username
 
+        # Game dimensions
         self.width = GameConstants.DIMENSIONS['game'][0]
         self.height = GameConstants.DIMENSIONS['game'][1]
-
 
         # Tower variables
         self.archer_towers = []
@@ -187,7 +184,7 @@ class Game:
                     self.cur_wave_amounts[i] -= 1
                     break
         else:
-            if not self.enemies:
+            if not self.enemies and self.current_wave <= 10:
                 self.current_wave += 1
                 self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
                 self.pause_game = True
@@ -371,12 +368,12 @@ class Game:
                     attack_towers = self.archer_towers[:] + self.magic_towers[:]
                     t.support(attack_towers)
 
-            if self.lives <= 0:
+            if self.lives <= 0 or :
                 self.pause_game = True
                 self.game_over = True
                 if self.ending_screen:
                     ongoing = False
-                    ending_screen = EndingScreen(self.window, "defeat")
+                    ending_screen = EndingScreen(self.window, "defeat", self.username)
                     if ending_screen.run_game() == 'restart':
                         return 'restart'
                     # ending_screen.run_game()
