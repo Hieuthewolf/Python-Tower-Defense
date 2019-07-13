@@ -117,6 +117,7 @@ class StartingScreen:
                                 self.selected = None
                             del game
                             self.username = ""
+                            self.enter_user_name = None
                             continue
 
                         elif event.key == pygame.K_BACKSPACE:

@@ -53,7 +53,7 @@ class Enemy(GameObjects):
     
         # For freezing logistics
         self.affected = False
-        self.default_move_speed = 20
+        self.default_move_speed = 3
         self.move_speed = self.default_move_speed
         
     def die(self, window):

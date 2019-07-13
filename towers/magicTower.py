@@ -58,7 +58,8 @@ class FireTower(Tower):
                 window.blit(small_ball, (self.x - small_ball.get_width() // 2 - 3,  self.y - self.dimensions[1] // 2 + small_ball.get_height() // 2 - 10))
             else:
                 window.blit(big_ball, (self.x - small_ball.get_width() // 2 - 7,  self.y - self.dimensions[1] // 2 + big_ball.get_height() // 2))
-        
+
+
             if self.enemy_in_range:      
                 window.blit(self.fire_spark, (self.aim_target.x - 20,  self.aim_target.y  - fire_spark.get_height() - self.aim_target.height // 2 - 20))
                 window.blit(fire_flame, (self.aim_target.x - fire_flame.get_width() // 2 + 30 , self.aim_target.y - fire_flame.get_height() // 2 - 50))
@@ -162,7 +163,7 @@ class IceTower(Tower):
                 window.blit(small_spike, (self.x + 10,  self.y - self.dimensions[1] // 2 + 22)) #Bottom-right spike
                 window.blit(small_spike, (self.x - 25,  self.y - self.dimensions[1] // 2 + 22)) #Bottom-left spike     
 
-            if self.enemy_in_range:
+            if self.aim_target:
                 window.blit(self.ice_spark, (self.aim_target.x - 20,  self.aim_target.y  - ice_spark.get_height() - self.aim_target.height // 2 - 20))
                 window.blit(ice_freeze, (self.aim_target.x - ice_freeze.get_width() // 2 + 30 , self.aim_target.y - ice_freeze.get_height() // 2 - 50))
 

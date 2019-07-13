@@ -159,11 +159,12 @@ class Game:
             self.tower_radius_surface = pygame.Surface((self.tower_selected.range * 4, self.tower_selected.range * 4), pygame.SRCALPHA, 32)
             pygame.draw.circle(self.tower_radius_surface, (128, 128, 128, 100), (self.tower_selected.range, self.tower_selected.range), self.tower_selected.range, 0)
 
+        self.start_time = time.time()
+
     def spawn_enemies(self):
         """
         Spawns enemies based on the current wave
         """
-
         if sum(self.cur_wave_amounts):
             ENEMY_WAVES_MONSTER_NAMES = {
                 0: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
@@ -368,12 +369,33 @@ class Game:
                     attack_towers = self.archer_towers[:] + self.magic_towers[:]
                     t.support(attack_towers)
 
-            if self.lives <= 0 or :
+            if self.lives <= 0:
                 self.pause_game = True
                 self.game_over = True
+
+          
                 if self.ending_screen:
+                    # Formatting time to be "MM:SS"
+                    total_seconds = round(time.time() - self.start_time)
+
+                    seconds = total_seconds % 60
+                    minutes = total_seconds // 60
+
+                    if seconds < 10:
+                        seconds = "0" + str(seconds)
+                    if minutes < 10:
+                        minutes = "0" + str(minutes)
+
+                    formatted_time = str(minutes) + ":" + str(seconds)
+                    
+                    # Push statistics data into database
+                    if not collection.find_one({"_id": self.username+ "_" +self.map_label}):
+                        collection.insert_one({"_id": self.username+ "_" +self.map_label, "username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": self.current_wave + 1, "map_label": self.map_label})
+                    else:
+                        collection.find_one_and_update({"_id": self.username+ "_" +self.map_label, "map_label": self.map_label}, {"$set": {"username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": self.current_wave + 1, "map_label": self.map_label}})
+
                     ongoing = False
-                    ending_screen = EndingScreen(self.window, "defeat", self.username)
+                    ending_screen = EndingScreen(self.window, "defeat", self.username, self.map_label)
                     if ending_screen.run_game() == 'restart':
                         return 'restart'
                     # ending_screen.run_game()
