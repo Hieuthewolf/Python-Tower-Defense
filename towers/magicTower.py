@@ -25,11 +25,12 @@ class FireTower(Tower):
         self.base_range = self.range
         self.base_damage = 3
         self.damage = self.base_damage
-        self.area_of_effect = 150
+        self.area_of_effect = 150   
 
+        # Toggle to determine if enemies are in range
         self.enemy_in_range = False
 
-        # Appears over target's head
+        # Appears over target's head to show the target that the tower is targeting
         self.fire_spark = fire_spark
 
         # Animating fire flame impact
@@ -37,6 +38,7 @@ class FireTower(Tower):
         self.fire_flame_count = 0
         self.aim_target = None
 
+        # For locking fire animation on an aim target as long as the aim target is still in range
         self.locked = False
         
     def draw(self, window):
@@ -66,9 +68,13 @@ class FireTower(Tower):
 
     def attack(self, enemies, dead_enemies):
         """
-        attacks enemy in enemy list, modifying the list
-        :param enemies: list of enemies
-        :return: None
+        Attacks enemies in enemy list and modifies it and adds the enemies to dead_enemies list if they die
+        Also syncs up the animation of the projectiles to that of the depletion of HP due to fireball
+
+        @param (LIST) enemies: list of current enemies on the field
+        @Param (SET) dead_enemies: set of dead enemies after going down to 0 hp
+
+        --> return: Int (money currency)
         """
         current_enemies = enemies[:]
         enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
@@ -141,6 +147,13 @@ class IceTower(Tower):
         self.locked = False
 
     def draw(self, window):
+        """
+        Draws magic towers as based on their specific level and animate the attack animation to sync up with enemies
+        @param (SURFACE) window: surface for rendering the drawing
+
+        --> return: None
+        """
+
         super().draw(window)
 
         ice_freeze = self.ice_freeze_images[self.ice_freeze_count // 4]
@@ -169,9 +182,13 @@ class IceTower(Tower):
 
     def attack(self, enemies, dead_enemies):
         """
-        attacks enemy in enemy list, modifying the list
-        :param enemies: list of enemies
-        :return: None
+        Attacks enemies in enemy list and modifies it and adds the enemies to dead_enemies list if they die
+        Also syncs up the animation of the projectiles to that of the slowing effect of ice towers
+
+        @param (LIST) enemies: list of current enemies on the field
+        @Param (SET) dead_enemies: set of dead enemies after going down to 0 hp
+
+        --> return: Int (money currency)
         """
         current_enemies = enemies[:]
         enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]

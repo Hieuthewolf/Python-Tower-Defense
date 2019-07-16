@@ -13,32 +13,33 @@ damage_tower = [pygame.transform.scale(pygame.image.load(os.path.join("images/to
 
 class DamageTower(Tower):
     """
-    Increase damage of nearby towers
+    Increase damage of nearby towers in a circular radius
     """
     def __init__(self, name, coord):
         super().__init__(name, coord)
         self.tower_images = damage_tower[:]
-        self.increase = [0.2, 0.4, 0.6]
+        self.damage_increase = [0.2, 0.4, 0.6]
 
     def draw(self, window):
+        """
+        Draws support towers as based on their specific level 
+        @param (SURFACE) window: surface for rendering the drawing
+
+        --> return: None
+        """
         super().draw(window)
 
     def support(self, towers):
         """
-        increase stats of nearby towers based on speciality
-        @param towers: list
-        :returns: None
+        Increase nearby tower stats based on its support type (ranged vs damage)
+        @param (LIST) towers: list of all attack towers (magic and archer)
+
+        --> return: None
         """
-        in_range_towers = []
-        for tw in towers:
-            x, y = tw.x, tw.y
-            dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
+        in_range = [tw for tw in towers if math.sqrt((self.x - tw.x) ** 2 + (self.y - tw.y) ** 2) <= self.range + tw.width // 2]
 
-            if dist <= self.range + tw.width / 2:
-                in_range_towers.append(tw)
-
-        for tw in in_range_towers:
-            tw.damage = tw.base_damage + round(tw.base_damage * self.increase[self.level - 1])
+        for tw in in_range:
+            tw.damage = tw.base_damage + round(tw.base_damage * self.damage_increase[self.level - 1])
 
 # <-------------------------------------------- RANGE TOWER  -------------------------------------------------->
 range_tower = [pygame.transform.scale(pygame.image.load(os.path.join("images/towers/support_towers/range_support_tower/", "1.png")), (80, 80)),
@@ -48,7 +49,7 @@ range_tower = [pygame.transform.scale(pygame.image.load(os.path.join("images/tow
 
 class RangeTower(DamageTower):
     """
-    Increase range of nearby towers
+    Increase range of nearby towers in a circular radius
     """
     def __init__(self, name, coord):
         super().__init__(name, coord)
@@ -57,19 +58,14 @@ class RangeTower(DamageTower):
 
     def support(self, towers):
         """
-        increase stats of nearby towers based on speciality
-        @param towers: list
-        :returns: None
+        Increase nearby tower stats based on its support type (ranged vs damage)
+        @param (LIST) towers: list of all attack towers (magic and archer)
+
+        --> return: None
         """
-        in_range_towers = []
-        for tw in towers:
-            x, y = tw.x, tw.y
-            dist = math.sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
+        in_range = [tw for tw in towers if math.sqrt((self.x - tw.x) ** 2 + (self.y - tw.y) ** 2) <= self.range + tw.width // 2]
 
-            if dist <= self.range + tw.width / 2:
-                in_range_towers.append(tw)
-
-        for tw in in_range_towers:
+        for tw in in_range:
             tw.range = tw.base_range + round(tw.base_range * self.increase[self.level - 1])
         
 

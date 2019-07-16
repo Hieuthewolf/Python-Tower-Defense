@@ -9,11 +9,11 @@ smaller_upgrade_crystal = pygame.transform.scale(pygame.image.load(os.path.join(
 
 class Button:
     """
-    Reusable Button Class for various menus
-    @param name: string
-    @param image: surface
-    @param menu: object
-    #param item_count: int
+    Reusable button class for shop menu and tower menu
+    @param (STR) name: name of button to be linked to a specific tower
+    @param (SURFACE) image: button image to be displayed
+    @param (OBJECT) menu: menu object that contains all information regarding towers and menu attributes
+    @param (INT) item_count: integer to keep track of how many items are added to a menu
     """
     def __init__(self, name, image, menu, item_count):
         self.name = name
@@ -35,19 +35,19 @@ class Button:
     def click(self, X, Y):
         """
         returns True if mouse clicks on button
-        @param X: int
-        @param Y: int
+        @param (INT) X: x-coordinate of mouse position
+        @param (INT) Y: y-coordinate of mouse position
 
-        --> return: boolean
+        --> return: Boolean
         """
-        if X <= self.x + self.width - self.extra_padding and X >= self.x + self.extra_padding :
+        if X <= self.x + self.width - self.extra_padding and X >= self.x + self.extra_padding:
             if Y <= self.y + self.height - self.extra_padding and Y >= self.y + self.extra_padding:
                 return True
         return False
 
     def update_coordinates(self):
         """
-        Updates tower coordinates once tower has been placed down on the map
+        Updates button coordinates for a specific tower once its been placed down
 
         --> return: None
         """
@@ -63,14 +63,17 @@ class Button:
     def draw(self, window):
         """
         Draws the button image on the screen
-        @param window: surface
+        @param (SURFACE) window: surface for rendering the drawing
 
         --> return: None
         """
         window.blit(self.image, (self.x, self.y))
     
 
-class MainButton(Button):
+class ShopButton(Button):
+    """
+    Specific button for the shop menu to buy towers
+    """
     def __init__(self, name, image, x, y, cost):
         self.name = name
         self.image = image
@@ -80,6 +83,9 @@ class MainButton(Button):
         self.extra_padding = 10
 
 class GameStateButton(Button):
+    """
+    Specific button to toggle spawning waves and playing music
+    """
     def __init__(self, play_img, pause_img, x, y):
         self.images = [play_img, pause_img]
         self.x = x
@@ -89,6 +95,11 @@ class GameStateButton(Button):
         self.extra_padding = 10
 
     def switch_img(self):
+        """
+        Switches between the sound on/sound off icons for the image being displayed
+
+        --> return : None
+        """
         if self.image == self.images[0]:
             self.image = self.images[1]
         else:
@@ -96,13 +107,13 @@ class GameStateButton(Button):
 
 class Menu:
     """
-    Menu containing all the towers and items
+    Generic menu class 
     """
     def __init__(self, tower, menu_background):
         # Menu characteristics
         self.width, self.height = menu_background.get_width(), menu_background.get_height()
-        self.buttons = []
-        self.item_count = 0
+        self.buttons = [] #Contains all the buttons in our menu
+        self.item_count = 0 
         self.images = []
         self.font = pygame.font.SysFont("comicsans", 22)
         self.menu_background = menu_background
@@ -110,8 +121,9 @@ class Menu:
 
         # Tower characteristics
         self.tower = tower
-        self.tower_name = tower.name
         self.x, self.y = tower.x, tower.y
+
+        self.tower_name = tower.name
         self.tower_cost = tower.cost
         self.tower_level = tower.level
         self.tower_width = tower.width
@@ -120,21 +132,24 @@ class Menu:
 
     def add_button(self, name, image):
         """
-        Adds buttons to the menu board
-        @param name: string
-        @param image: surface
-        :return: None
+        Adds buttons to our menu
+        @param (STR) name: name of the button (specifically tower name)
+        @param (SURFACE) image: image surface
+
+        --> None
         """
         self.item_count += 1
         self.buttons.append(Button(name, image, self, self.item_count))
 
     def click(self, X, Y):
         """
-        returns True if mouse clicks on menu
-        @param X: int
-        @param Y: int
-        :return: boolean
+        returns True if mouse clicks on button
+        @param (INT) X: x-coordinate of mouse position
+        @param (INT) Y: y-coordinate of mouse position
+
+        --> return: Boolean
         """
+
         if X <= self.x + self.width and X >= self.x:
             if Y <= self.y + self.height and Y >= self.y:
                 return True
@@ -143,29 +158,32 @@ class Menu:
     def get_clicked_item(self, X, Y):
         """
         returns the clicked item from the menu
-        @param X: int
-        @param Y: int
-        :return: boolean
+        @param (INT) X: x-coordinate of mouse position
+        @param (INT) Y: y-coordinate of mouse position
+
+        --> return: Boolean
         """
-        for it in self.buttons:
-            if it.click(X, Y):
-                return it.name
+        for item in self.buttons:
+            if item.click(X, Y):
+                return item.name
 
         return None
 
     def update_buttons(self):
         """
         Updates the menu and all of its button (x, y) coords
-        :return: None
+
+        --> return: None
         """
         for btn in self.buttons:
             btn.update_coordinates()
 
     def draw(self, window):
         """
-        Draws buttons and menu background
-        @param window: surface
-        :return: None
+        Draws buttons and tower menu background
+        @param (SURFACE) window: window surface
+
+        --> return: None
         """
         window.blit(self.menu_background, (self.x - self.menu_background.get_width() / 2, self.y - self.tower_height - self.extra_padding))
         for it in self.buttons:
@@ -187,21 +205,23 @@ class ShopMenu(Menu):
     def __init__(self, x, y, menu_background):
         # Menu characteristics
         self.x, self.y = x, y
+        self.menu_background = menu_background
         self.width, self.height = menu_background.get_width(), menu_background.get_height()
         self.buttons = []
+
         self.item_count = 0
         self.images = []
         self.font = pygame.font.SysFont("comicsans", 25)
-        self.menu_background = menu_background
 
         self.start_new_line = 0
     
     def add_button(self, name, image, cost):
         """
-        Adds buttons to the menu board
-        @param name: string
-        @param image: surface
-        :return: None
+        Adds buttons to the shop menu board and arranges them in a n x 2 configuration 
+        @param (STR) name: name of the button (specifically tower name)
+        @param (SURFACE) image: image surface
+        
+        --> return: None
         """
         if self.item_count % 2 == 0 and self.item_count != 0:
             self.start_new_line += 1
@@ -214,15 +234,28 @@ class ShopMenu(Menu):
             x_btn_coord = self.x + 10
 
         y_btn_coord = self.y + 15 + self.start_new_line * 100
-        self.buttons.append(MainButton(name, image, x_btn_coord, y_btn_coord, cost))
+        self.buttons.append(ShopButton(name, image, x_btn_coord, y_btn_coord, cost))
 
-    def get_it_cost(self, name):
+    def get_item_cost(self, name):
+        """
+        Gets item cost associated with a specific tower when buying it from the shop
+        @param (STR) name: name of the button (specifically tower name)
+
+        --> return : Int
+        """
+
         for btn in self.buttons:
             if btn.name == name:
                 return btn.cost
         return -1
 
     def draw(self, window):
+        """
+        Draws buttons and shop menu background
+        @param (SURFACE) window: window surface
+
+        --> return: None
+        """
         window.blit(self.menu_background, (self.x - self.width / 2, self.y))
         for it in self.buttons:
             it.draw(window)

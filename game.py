@@ -85,19 +85,11 @@ class Game:
         #Enemy variables
         self.dead_enemies = set()
         self.enemies = []
-        self.all_bosses = [Mano("mano", self.map_label), KingSlime("king_slime", self.map_label), Balrog("balrog", self.map_label), Pianus('pianus', self.map_label), PinkBean('pink_bean', self.map_label)]
-        self.boss = True
-        self.next_round_after_boss = False
 
-        self.money = 100000
+        self.money = 5000
         self.background_img = pygame.image.load(os.path.join("images", self.map_label + "_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
         self.darken_background =  pygame.transform.scale(dark_bg, (self.width, self.height))
-
-        # Testing purposes
-        self.clicks = []
-
-        self.path = GameConstants.PATH[self.map_label][0]
 
         # Spawning enemies
         self.timer = time.time()
@@ -113,7 +105,6 @@ class Game:
         # Adding items to the shop
         if self.map_label != "map_2":
             self.shop_menu = ShopMenu(side_bar_img.get_width() // 2 - 10, 115, side_bar_img)
-
         else:
             self.shop_menu = ShopMenu(self.width - side_bar_img.get_width() // 2 + 5, 115, side_bar_img)
 
@@ -144,7 +135,7 @@ class Game:
         self.music = pygame.mixer.music
         self.music.load("maple.mp3")
         self.music.set_volume(0.5)
-        # self.music.play(-1)
+        self.music.play(-1)
         self.play_sound = True
         self.soundBtn = GameStateButton(play_music, pause_music, self.width - play_music.get_width() - play_round.get_width(), wave.get_height() - 5)
         self.soundBtn.switch_img()
@@ -168,29 +159,38 @@ class Game:
         if sum(self.cur_wave_amounts):
             ENEMY_WAVES_MONSTER_NAMES = {
                 0: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
-                1: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                1: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Mano("mano", self.map_label)],
                 2: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
-                3: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label)],
+                3: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), KingSlime("king_slime", self.map_label)],
                 4: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
-                5: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                5: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Balrog("balrog", self.map_label)],
                 6: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
-                7: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label)],
+                7: [Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Pianus('pianus', self.map_label)],
                 8: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)],
-                9: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)],
-                10: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label)]
+                9: [Monster_1('monster_1', self.map_label), Monster_2('monster_2', self.map_label), Monster_3('monster_3', self.map_label), Monster_4('monster_4', self.map_label), Monster_5('monster_5', self.map_label), Monster_6('monster_6', self.map_label), Monster_7('monster_7', self.map_label), Monster_8('monster_8', self.map_label), Monster_9('monster_9', self.map_label), Monster_10('monster_10', self.map_label), PinkBean('pink_bean', self.map_label)],
             }
+
             for i, amount in enumerate(self.cur_wave_amounts):
                 if amount:
                     self.enemies.append(ENEMY_WAVES_MONSTER_NAMES[self.current_wave][i])
                     self.cur_wave_amounts[i] -= 1
                     break
         else:
-            if not self.enemies and self.current_wave <= 10:
+            if not self.enemies and self.current_wave <= 9:
                 self.current_wave += 1
-                self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+                if self.current_wave <= 9:
+                    self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
                 self.pause_game = True
                 self.game_state_button.image = self.game_state_button.images[0]
-                self.dead_enemies = set()
+
+                reset = True
+                for enemy in self.dead_enemies:
+                    if enemy.dead:
+                        reset = False
+                        break
+
+                if reset:
+                    self.dead_enemies = set()
 
     def buy_tower(self, name):
         x, y = pygame.mouse.get_pos()
@@ -215,23 +215,12 @@ class Game:
                 self.music.unpause()
 
             if not self.pause_game:
-                # Boss waves
-                if self.current_wave != 0 and self.current_wave % 2 == 0:
-                    if not self.enemies and not self.next_round_after_boss:
-                        self.enemies.append(self.all_bosses[(self.current_wave // 2) - 1])
-                    # self.boss = False
-                
-                if self.current_wave == 0 or self.current_wave % 2 != 0 or self.next_round_after_boss:
-                    # Monster waves
-                    if time.time() - self.timer >= random.randint(1, 6) / 3:
-                        self.timer = time.time()
-                        self.spawn_enemies()
-
-                if self.current_wave % 2 != 0:
-                    self.next_round_after_boss = False
+                # Spawn enemies
+                if time.time() - self.timer >= random.randint(1, 6) / 3:
+                    self.timer = time.time()
+                    self.spawn_enemies()
 
             # Check for objects being dragged
-
             pos = pygame.mouse.get_pos()
 
             if self.drag_object:
@@ -271,8 +260,8 @@ class Game:
                         else:
                             self.magic_towers.append(self.drag_object)
 
-                        if self.money >= self.shop_menu.get_it_cost(self.drag_object.name):
-                            self.money -= self.shop_menu.get_it_cost(self.drag_object.name)
+                        if self.money >= self.shop_menu.get_item_cost(self.drag_object.name):
+                            self.money -= self.shop_menu.get_item_cost(self.drag_object.name)
 
                         self.drag_object.being_dragged = False
                         self.drag_object = None
@@ -290,12 +279,9 @@ class Game:
                         #Clicking on main menu
                         main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])  
 
-                        if main_menu_item_name : 
-                            if self.money >= self.shop_menu.get_it_cost(main_menu_item_name):
+                        if main_menu_item_name: 
+                            if self.money >= self.shop_menu.get_item_cost(main_menu_item_name):
                                 self.buy_tower(main_menu_item_name)
-                      
-                        # self.clicks.append(pos)
-                        # print(self.clicks)
                         
                         #Currently pressing on an item on the menu
                         if self.tower_clicked:   
@@ -348,7 +334,6 @@ class Game:
                 for e in delete_enemies:
                     if e.name in EnemyConstants.BOSS_NAMES:
                         self.lives -= 5
-                        self.next_round_after_boss = True
                     else:
                         self.lives -= 1
                     self.enemies.remove(e)
@@ -360,16 +345,12 @@ class Game:
                 # Looping through magic towers and attack enemies if they are in range
                 for t in self.magic_towers:
                     self.money += t.attack(self.enemies, self.dead_enemies)
-           
-                for e in self.dead_enemies:
-                    if e.name in EnemyConstants.BOSS_NAMES:
-                        self.next_round_after_boss = True
 
                 for t in self.support_towers:
                     attack_towers = self.archer_towers[:] + self.magic_towers[:]
                     t.support(attack_towers)
 
-            if self.lives <= 0:
+            if self.lives <= 0 or self.current_wave == 10:
                 self.pause_game = True
                 self.game_over = True
 
@@ -387,18 +368,27 @@ class Game:
                         minutes = "0" + str(minutes)
 
                     formatted_time = str(minutes) + ":" + str(seconds)
-                    
+
+                    if self.current_wave == 10:
+                        wave_num = 10
+                    else:
+                        wave_num = self.current_wave + 1
+
                     # Push statistics data into database
                     if not collection.find_one({"_id": self.username+ "_" +self.map_label}):
-                        collection.insert_one({"_id": self.username+ "_" +self.map_label, "username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": self.current_wave + 1, "map_label": self.map_label})
+                        collection.insert_one({"_id": self.username+ "_" +self.map_label, "username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": wave_num, "map_label": self.map_label})
                     else:
-                        collection.find_one_and_update({"_id": self.username+ "_" +self.map_label, "map_label": self.map_label}, {"$set": {"username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": self.current_wave + 1, "map_label": self.map_label}})
+                        collection.find_one_and_update({"_id": self.username+ "_" +self.map_label, "map_label": self.map_label}, {"$set": {"username": self.username, "game_time": formatted_time, "lives": self.lives, "wave_number": wave_num, "map_label": self.map_label}})
 
                     ongoing = False
-                    ending_screen = EndingScreen(self.window, "defeat", self.username, self.map_label)
+
+                    if self.current_wave == 10:
+                        ending_screen = EndingScreen(self.window, "victory", self.username, self.map_label)
+                    else:
+                        ending_screen = EndingScreen(self.window, "defeat", self.username, self.map_label)
+
                     if ending_screen.run_game() == 'restart':
                         return 'restart'
-                    # ending_screen.run_game()
                     del ending_screen
 
             self.draw()
@@ -414,10 +404,6 @@ class Game:
             self.game_over_animation_count += 1
             if self.game_over_animation_count == len(self.explosion_images):
                 self.ending_screen = True
-
-        # Testing purposes of mouse movement
-        for p in self.clicks:
-            pygame.draw.circle(self.window, (255, 0, 0), (p[0], p[1]), 10, 0)
 
         if self.tower_selected:
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))
@@ -483,7 +469,11 @@ class Game:
 
         #Drawing the wave indicator
         self.window.blit(wave, (self.width - wave.get_width() + 30, -10)) #Wave BG
-        wave_txt = self.font.render("Wave: " + str(self.current_wave + 1), 1, (255, 255, 255))
+        if self.current_wave == 10:
+            wave_txt = self.font.render("Wave: " + str(self.current_wave), 1, (255, 255, 255))
+        else:
+            wave_txt = self.font.render("Wave: " + str(self.current_wave + 1), 1, (255, 255, 255))
+
         self.window.blit(wave_txt, (self.width - wave_txt.get_width() // 2 - wave.get_width() // 2 + 15, 5))
 
         pygame.display.update()

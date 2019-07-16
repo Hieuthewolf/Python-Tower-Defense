@@ -138,7 +138,7 @@ class Tower(GameObjects):
         if self.level < len(self.tower_images):
             self.level_up_animation = True
             self.level += 1
-            self.base_damage += 1
+            self.base_damage += 3
             self.damage = self.base_damage
 
             #Since level does not upgrade in menu we have to manually do it here

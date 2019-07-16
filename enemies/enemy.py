@@ -107,7 +107,6 @@ class Enemy(GameObjects):
         moving_up = (unit_vector[1] <= 0)
         moving_right = (unit_vector[0] > 0)
         no_delta_x = (unit_vector[0] == 0)
-        no_delta_y = (unit_vector[1] == 0) 
 
         if moving_right:
             if moving_up:

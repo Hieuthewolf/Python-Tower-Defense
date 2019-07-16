@@ -80,45 +80,45 @@ class EnemyConstants:
         'monster_10': 40,
 
         # Bosses
-        'balrog': 100,
-        'king_slime': 200,
-        'mano': 300, 
-        'pianus': 400,
-        'pink_bean': 500
+        'balrog': 1,
+        'king_slime': 1,
+        'mano': 1, 
+        'pianus': 1,
+        'pink_bean': 1
     }
 
     ENEMY_CRYSTALS = {
         # Monsters
-        'monster_1': 6,
-        'monster_2': 8,
-        'monster_3': 12,
-        'monster_4': 16,
-        'monster_5': 18,
-        'monster_6': 24,
-        'monster_7': 26,
-        'monster_8': 32,
-        'monster_9': 34,
-        'monster_10': 40,
+        'monster_1': 24,
+        'monster_2': 38,
+        'monster_3': 46,
+        'monster_4': 58,
+        'monster_5': 72,
+        'monster_6': 90,
+        'monster_7': 108,
+        'monster_8': 132,
+        'monster_9': 160,
+        'monster_10': 200,
 
         # Bosses
-        'mano': 1000,
-        'king_slime': 2000,
-        'balrog': 3000, 
-        'pianus': 4000,
-        'pink_bean': 5000
+        'mano': 2000,
+        'king_slime': 5000,
+        'balrog': 10000, 
+        'pianus': 25000,
+        'pink_bean': 50000
     }
 
     ENEMY_WAVES_AMOUNT = {
         0: [1, 1, 1, 1],
-        1: [1, 1, 1, 1],
+        1: [1, 1, 1, 1, 1], #Spawn mano at the end
         2: [1, 1, 1, 1],
-        3: [1, 1, 1, 1],
+        3: [1, 1, 1, 1, 1], #Spawn king slime at the end
         4: [1, 1, 1, 1],
-        5: [1, 1, 1, 1],
+        5: [1, 1, 1, 1, 1], #Spawn balrog at the end
         6: [1, 1, 1, 1],
-        7: [1, 1, 1, 1],
+        7: [1, 1, 1, 1, 1], #Spawn pianus at the end
         8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Spawn pink bean at the end
     }
 
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
