@@ -23,8 +23,14 @@ cluster = MongoClient("mongodb+srv://hieuthewolf:hieutrung123@cluster0-qcx63.mon
 db = cluster["Python_Tower_Defense"]
 collection = db["high_scores"]
 
-
 class EndingScreen:
+    """
+    The very last screen that shows the leaderboard and game statistics 
+    @param (SURFACE) window: pygame surface to render the screen
+    @param (STR) game_status: either victoy or defeat to trigger "You Fail" or "You Win"
+    @param (STR) username: unique username identifier to grab stats that pertain specifically for that user
+    @param (STR) map_label: to indicate what map has been played
+    """
     def __init__(self, window, game_status, username, map_label):
         self.window = window
         self.game_status = game_status
@@ -54,6 +60,12 @@ class EndingScreen:
         self.leader_board = []
 
     def draw(self):
+        """
+        Draws the leaderboard and the various game statistics 
+
+        --> return: None
+        """
+
         # Bliting the map
         self.window.blit(self.background, (0, 0))
         self.window.blit(self.background_darken, (0, 0))
@@ -120,6 +132,11 @@ class EndingScreen:
         pygame.display.update()
 
     def run_game(self):
+        """
+        Main game loop to continuously run the ending_screen unless prompted to restart back to the beginning
+        
+        --> return: None
+        """
         ongoing = True
         results = collection.find({"map_label": self.map_label})
 

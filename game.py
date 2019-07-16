@@ -68,6 +68,12 @@ explosion = import_images_num_extended("images/screens/", 1, 51, (GameConstants.
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 class Game:
+    """
+    Main game screen where the entire game will be rendered in 
+    @param (SURFACE) window: pygame surface to render
+    @param (STR) map_label: to indicate what map will be active
+    @param (STR) username: unique username identifier to grab stats that pertain specifically for that user
+    """
     def __init__(self, window, map_label, username):
         self.window = window
         self.map_label = map_label
@@ -85,8 +91,11 @@ class Game:
         #Enemy variables
         self.dead_enemies = set()
         self.enemies = []
-
+        
+        # Game currency
         self.money = 5000
+
+        # Background images and schematics
         self.background_img = pygame.image.load(os.path.join("images", self.map_label + "_bg.png"))
         self.background_img = pygame.transform.scale(self.background_img, (GameConstants.DIMENSIONS['game'][0], GameConstants.DIMENSIONS['game'][1]))
         self.darken_background =  pygame.transform.scale(dark_bg, (self.width, self.height))
@@ -96,7 +105,7 @@ class Game:
         
         # Lives and life font
         self.font = game_font
-        self.lives = 1
+        self.lives = 15
 
         # Selecting tower logistics
         self.tower_selected = None
@@ -108,12 +117,8 @@ class Game:
         else:
             self.shop_menu = ShopMenu(self.width - side_bar_img.get_width() // 2 + 5, 115, side_bar_img)
 
-        self.shop_menu.add_button("bowman", buy_archer, 400)
-        self.shop_menu.add_button("crossbowman", buy_crossbowman, 600)
-        self.shop_menu.add_button("support_damage", buy_support_dmg, 800)
-        self.shop_menu.add_button("support_range", buy_support_range, 1250)
-        self.shop_menu.add_button("magic_fire", buy_magic_fire, 1500)
-        self.shop_menu.add_button("magic_ice", buy_magic_ice, 2000)
+        # Adding all the buttons to the main shop
+        self.add_items_to_shop(self.shop_menu)
 
         # Dragging the tower from the shop to a location
         self.drag_object = None
@@ -152,9 +157,25 @@ class Game:
 
         self.start_time = time.time()
 
+    def add_items_to_shop(self, shop_menu):
+        """
+        Adds items to our main shop_menu
+        @param (OBJECT) shop_menu: shop menu object that we can add items to
+
+        --> return: None
+        """
+        shop_menu.add_button("bowman", buy_archer, 400)
+        shop_menu.add_button("crossbowman", buy_crossbowman, 600)
+        shop_menu.add_button("support_damage", buy_support_dmg, 800)
+        shop_menu.add_button("support_range", buy_support_range, 1250)
+        shop_menu.add_button("magic_fire", buy_magic_fire, 1500)
+        shop_menu.add_button("magic_ice", buy_magic_ice, 2000)
+
     def spawn_enemies(self):
         """
-        Spawns enemies based on the current wave
+        Spawn enemies based on the current wave
+
+        --> return: None
         """
         if sum(self.cur_wave_amounts):
             ENEMY_WAVES_MONSTER_NAMES = {
@@ -192,17 +213,29 @@ class Game:
                 if reset:
                     self.dead_enemies = set()
 
-    def buy_tower(self, name):
+    def set_tower_drag_object(self, name):
+        """
+        Attempts to match the tower with the associated tower object and sets self.drag_object to that tower object and
+        sets the tower's dragged property as True
+        @param (STR) name: name of the tower object
+
+        --> return: None
+        """
         x, y = pygame.mouse.get_pos()
         tower_obj_pair = {"bowman": ArcherTowerFar("bowman", (x, y)), "crossbowman": ArcherTowerShort("crossbowman", (x, y)), "support_damage": DamageTower("support_damage", (x, y)), "support_range": RangeTower("support_range", (x, y)), "magic_fire": FireTower("magic_fire", (x, y)), "magic_ice": IceTower("magic_ice", (x, y))}
         try:
             tower_obj = tower_obj_pair[name]
             self.drag_object = tower_obj
-            tower_obj.being_dragged = True
+            tower_obj.dragged = True
         except Exception as error:  
             print(error + " " + "Invalid Name")
 
     def run_game(self):
+        """
+        Main game loop to keep the game continuously running 
+
+        --> return: None
+        """
         ongoing = True
         clock = pygame.time.Clock()
 
@@ -220,39 +253,44 @@ class Game:
                     self.timer = time.time()
                     self.spawn_enemies()
 
-            # Check for objects being dragged
             pos = pygame.mouse.get_pos()
 
+
+            # Checking for tower collisions when we are trying to place the tower on the board
             if self.drag_object:
+                self.drag_object.move(pos[0], pos[1])
+
+                # Tower collision with the path
                 if self.drag_object.get_closest_distance_to_path(GameConstants.PATH[self.map_label]) < 80:
                     self.invalid_tower_path_placement = (self.drag_object, (self.drag_object.x, self.drag_object.y))
                 else:
                     self.invalid_tower_path_placement = None
 
-                self.drag_object.move(pos[0], pos[1])
-                mouse_obj = GameObjects(self.drag_object.name, (pos[0], pos[1]))
-
                 all_towers = self.archer_towers[:] + self.support_towers[:] + self.magic_towers[:]
+                tower_obj = GameObjects(self.drag_object.name, (pos[0], pos[1])) #initiate a new tower_obj to update position
 
                 for tower in all_towers:
-                    if mouse_obj.does_collides(tower):
+                    if tower_obj.does_collides(tower):
                         self.invalid_tower_placement = (tower, (tower.x, tower.y))
                         break
                     else:
                         self.invalid_tower_placement = None
+                
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     ongoing = False
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    # If dragging an item and then clicking on a spot
+                    # Resets the drag object if we don't wish to buy the tower
                     if self.drag_object and self.shop_menu.get_clicked_item(pos[0], pos[1]):
                         self.drag_object = None
                         continue
 
+                    # While we have our drag object and we press down, then we will buy that tower and place it accordingly on the board
                     if self.drag_object and not self.invalid_tower_placement and not self.invalid_tower_path_placement:
                         self.drag_object.coord = (pos[0], pos[1])
+
                         if self.drag_object.name in TowerConstants.ATT_TOWER_NAMES:
                             self.archer_towers.append(self.drag_object)
                         elif self.drag_object.name in TowerConstants.SUP_TOWER_NAMES:
@@ -263,35 +301,43 @@ class Game:
                         if self.money >= self.shop_menu.get_item_cost(self.drag_object.name):
                             self.money -= self.shop_menu.get_item_cost(self.drag_object.name)
 
-                        self.drag_object.being_dragged = False
+                        # Resets our dragging paramaters
+                        self.drag_object.dragged = False
                         self.drag_object = None
 
+
+                    # Not currently being moved around the map
                     elif not self.drag_object:
-                        # Checking for the current state of the game (Paused or play)
+                        # Checking for the current wave state of the game (Paused or play)
                         if self.game_state_button.click(pos[0], pos[1]) and not self.enemies:
                             self.pause_game = not self.pause_game
                             self.game_state_button.switch_img()
 
+                        # Checking for the current sound state of the game (Paused or play)
                         if self.soundBtn.click(pos[0], pos[1]):
                             self.play_sound = not self.play_sound
                             self.soundBtn.switch_img()
 
-                        #Clicking on main menu
-                        main_menu_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])  
+                        #Clicking on main menu      
+                        shop_item_name = self.shop_menu.get_clicked_item(pos[0], pos[1])  
 
-                        if main_menu_item_name: 
-                            if self.money >= self.shop_menu.get_item_cost(main_menu_item_name):
-                                self.buy_tower(main_menu_item_name)
+                        # Sets the drag object as the tower object from the shop menu if we have enough money
+                        if shop_item_name: 
+                            if self.money >= self.shop_menu.get_item_cost(shop_item_name):
+                                self.set_tower_drag_object(shop_item_name)
                         
-                        #Currently pressing on an item on the menu
+
+                        #Currently pressing on an item on the tower menu
                         if self.tower_clicked:   
                             self.tower_clicked = self.tower_selected.menu.get_clicked_item(pos[0], pos[1])
                             tower_cost = self.tower_selected.get_upgrade_cost()
 
+                            # Upgrading item on the tower menu via the upgrade button
                             if self.tower_clicked == "upgrade" and isinstance(tower_cost, int) and self.money >= tower_cost:
                                 self.money -= self.tower_selected.get_upgrade_cost()
                                 self.tower_selected.upgrade()
 
+                            # Selling the tower when clicking on the undo button on the tower menu
                             if self.tower_clicked == "sell":
                                 self.money += self.tower_selected.get_sell_cost()
                                 if self.tower_selected.name in TowerConstants.ATT_TOWER_NAMES: #Remove from att towers
@@ -326,17 +372,18 @@ class Game:
                 # Appending to a new list enemeies that are off the screen as indicated by the e.move() return value
                 delete_enemies = []
                 for e in self.enemies:
-                    e.update_speed_status(set(filter(lambda tower: (tower.name == 'magic_ice'), self.magic_towers)))
+                    e.update_speed_status(set(filter(lambda tower: (tower.name == 'magic_ice'), self.magic_towers))) #Updating enemy speed if not in presence of ice towers
                     if not e.move():
                         delete_enemies.append(e)
 
-                # Deleting enemies off the screen
+                # Deleting enemies off the screen (bosses take away more lives)
                 for e in delete_enemies:
                     if e.name in EnemyConstants.BOSS_NAMES:
                         self.lives -= 5
                     else:
                         self.lives -= 1
                     self.enemies.remove(e)
+
 
                 # Looping through attack towers and attack enemies if any are in range
                 for t in self.archer_towers:
@@ -346,14 +393,16 @@ class Game:
                 for t in self.magic_towers:
                     self.money += t.attack(self.enemies, self.dead_enemies)
 
+                # Looping through support towers and supporting nearby towers if they are in range
                 for t in self.support_towers:
                     attack_towers = self.archer_towers[:] + self.magic_towers[:]
                     t.support(attack_towers)
 
+                
+            # Proceed to the ending_screen if we have beaten all the levels or we've ran out of all the lives
             if self.lives <= 0 or self.current_wave == 10:
                 self.pause_game = True
                 self.game_over = True
-
           
                 if self.ending_screen:
                     # Formatting time to be "MM:SS"
@@ -396,16 +445,23 @@ class Game:
         pygame.quit()
 
     def draw(self):
+        """
+        Draws all the towers, messages, and texts on the screen while the game is continuously running
+
+        --> return: None
+        """
         self.window.blit(self.background_img, (0, 0))
 
+        # Background gets darker and we play the explosion animation
         if self.game_over:
             self.window.blit(self.darken_background, (0, 0))
             self.window.blit(self.explosion_images[self.game_over_animation_count], (0, 0))
             self.game_over_animation_count += 1
             if self.game_over_animation_count == len(self.explosion_images):
                 self.ending_screen = True
-
-        if self.tower_selected:
+        
+        # Blits the tower radius when selecting towers
+        if self.tower_selected: 
             self.window.blit(self.tower_radius_surface, (self.tower_selected.x - self.tower_selected.range, self.tower_selected.y - self.tower_selected.range))
 
         # Drawing towers
@@ -424,6 +480,7 @@ class Game:
         for dead_enemy in self.dead_enemies:
             dead_enemy.die(self.window)
 
+        # Drawing the red circles around invalid tower placements based on other towers or the path itself
         if self.invalid_tower_placement:
             s = pygame.Surface((60 * 5, 60 * 5), pygame.SRCALPHA, 32)
             pygame.draw.circle(s, (224, 94, 94, 100), (60, 60), 60, 0)
@@ -434,9 +491,10 @@ class Game:
             pygame.draw.circle(s, (224, 94, 94, 100), (60, 60), 60, 0)
             self.window.blit(s, (self.invalid_tower_path_placement[1][0] - 60, self.invalid_tower_path_placement[1][1] - 60))
 
-        # Draw the tower being dragged
+        # Draw the tower being dragged (puts the tower on higher priority when trying to blit with other images)
         if self.drag_object:
             self.drag_object.draw(self.window)
+
 
         #Drawing lives
         life_txt = self.font.render(str(self.lives), 1, (255, 255, 255))
@@ -446,6 +504,7 @@ class Game:
         self.window.blit(life_txt, (life_start_pos + 25, 11))
         self.window.blit(life_img, (life_start_pos - 25, 8))
 
+
         #Drawing crystal currency
         crystal_txt = self.font.render(str(self.money), 1, (255, 255, 255))
         crystal_img = pygame.transform.scale(crystal_image, (40, 40))
@@ -454,18 +513,23 @@ class Game:
         self.window.blit(crystal_txt, (crystal_start_pos + 25, 63))
         self.window.blit(crystal_img, (crystal_start_pos - 25, 60))
 
+
         #Draw menu
         self.shop_menu.draw(self.window)
+
 
         #Redrawing the selected tower so that it has the highest priority
         if self.tower_selected:
             self.tower_selected.draw(self.window)
 
+
         #Drawing game state button
         self.game_state_button.draw(self.window)
 
+
         #Drawing music button
         self.soundBtn.draw(self.window)
+
 
         #Drawing the wave indicator
         self.window.blit(wave, (self.width - wave.get_width() + 30, -10)) #Wave BG
@@ -476,7 +540,5 @@ class Game:
 
         self.window.blit(wave_txt, (self.width - wave_txt.get_width() // 2 - wave.get_width() // 2 + 15, 5))
 
-        pygame.display.update()
 
-# g = Game(self.window)
-# g.run_game()
+        pygame.display.update()

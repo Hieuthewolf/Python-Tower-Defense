@@ -18,7 +18,6 @@ class GameConstants:
         'menu': (130, 70),
     }
 
-
     # Names of monsters and bosses in the waves
     PATH = {
         'map_1': [
@@ -80,11 +79,11 @@ class EnemyConstants:
         'monster_10': 40,
 
         # Bosses
-        'balrog': 1,
-        'king_slime': 1,
-        'mano': 1, 
-        'pianus': 1,
-        'pink_bean': 1
+        'balrog': 100,
+        'king_slime': 225,
+        'mano': 375, 
+        'pianus': 525,
+        'pink_bean': 800
     }
 
     ENEMY_CRYSTALS = {
@@ -101,49 +100,40 @@ class EnemyConstants:
         'monster_10': 200,
 
         # Bosses
-        'mano': 2000,
-        'king_slime': 5000,
-        'balrog': 10000, 
-        'pianus': 25000,
-        'pink_bean': 50000
+        'mano': 3500,
+        'king_slime': 7500,
+        'balrog': 19500, 
+        'pianus': 37500,
+        'pink_bean': 1000000
     }
 
-    ENEMY_WAVES_AMOUNT = {
-        0: [1, 1, 1, 1],
-        1: [1, 1, 1, 1, 1], #Spawn mano at the end
-        2: [1, 1, 1, 1],
-        3: [1, 1, 1, 1, 1], #Spawn king slime at the end
-        4: [1, 1, 1, 1],
-        5: [1, 1, 1, 1, 1], #Spawn balrog at the end
-        6: [1, 1, 1, 1],
-        7: [1, 1, 1, 1, 1], #Spawn pianus at the end
-        8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Spawn pink bean at the end
-    }
+    #FOR testing purposes
+    # ENEMY_WAVES_AMOUNT = {
+    #     0: [1, 1, 1, 1],
+    #     1: [1, 1, 1, 1, 1], #Spawn mano at the end
+    #     2: [1, 1, 1, 1],
+    #     3: [1, 1, 1, 1, 1], #Spawn king slime at the end
+    #     4: [1, 1, 1, 1],
+    #     5: [1, 1, 1, 1, 1], #Spawn balrog at the end
+    #     6: [1, 1, 1, 1],
+    #     7: [1, 1, 1, 1, 1], #Spawn pianus at the end
+    #     8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    #     9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Spawn pink bean at the end
+    # }
 
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
-    # ENEMY_WAVES_AMOUNT = {
-    #     0: [35, 25, 15, 10],
-    #     1: [10, 35, 25, 15],
-    #     2: [15, 10, 35, 25],
-    #     3: [10, 15, 25, 35],
-    #     4: [50, 35, 25, 15],
-    #     5: [15, 50, 35, 25],
-    #     6: [25, 15, 50, 35],
-    #     7: [15, 25, 35, 50],
-    #     8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
-    #     9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50]
-    # }
-
-    # After every round, there will be a boss
-    # --> below is the round #: boss name (key, value) pairing
-    BOSS_WAVES = {
-        0: 'mano',
-        1: 'king_slime',
-        2: 'balrog',
-        3: 'pianus',
-        4: 'pink_bean'
+    ENEMY_WAVES_AMOUNT = {
+        0: [35, 25, 15, 10],
+        1: [10, 35, 25, 15, 1], #Spawn mano at the end
+        2: [15, 10, 35, 25],
+        3: [10, 15, 25, 35, 1], #Spawn king slime at the end
+        4: [50, 35, 25, 15],
+        5: [15, 50, 35, 25, 1], #Spawn balrog at the end
+        6: [25, 15, 50, 35],
+        7: [15, 25, 35, 50, 1],  #Spawn pianus at the end
+        8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
+        9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50, 1] #Spawn pink bean at the end
     }
 
     # Collection of all the moving sprite images

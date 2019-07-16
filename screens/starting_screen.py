@@ -9,6 +9,10 @@ dark_bg = pygame.image.load(os.path.join("images/screens", "dark.png")).convert_
 game_font = pygame.font.SysFont('comicsans', 72)
 
 class StartingScreen:
+    """
+    The very first screen that users encounter
+    @param (SURFACE) window: pygame surface to render the screen
+    """
     def __init__(self, window):
         self.width, self.height = 1350, 750 
         self.window = window
@@ -32,6 +36,11 @@ class StartingScreen:
         self.font = game_font
 
     def draw(self):
+        """
+        Draws each of the maps and backgrounds and the main start button --> furthermore takes us into the Enter Username sub-screen
+
+        --> return: None
+        """
         # Bliting the maps
         if not self.enter_user_name:
             self.window.blit(self.map_1, (0, 0))
@@ -68,6 +77,11 @@ class StartingScreen:
         pygame.display.update()
 
     def run_game(self):
+        """
+        Main game loop to continuously run the starting_screen until we run game.run_game() to play the game
+
+        --> return: None
+        """
         ongoing = True
 
         while ongoing:

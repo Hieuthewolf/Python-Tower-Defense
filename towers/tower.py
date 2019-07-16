@@ -67,7 +67,7 @@ class Tower(GameObjects):
         self.damage = self.base_damage
 
         # For moving the archer tower when purchasing from the shops
-        self.being_dragged = False
+        self.dragged = False
 
         # Padding for clicking purposes
         self.extra_padding = 10

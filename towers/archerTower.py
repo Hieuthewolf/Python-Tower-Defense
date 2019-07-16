@@ -76,7 +76,7 @@ class ArcherTowerFar(Tower):
         enemies_in_range = [e for e in enemies if calculate_distance(self, e) <= self.range]
         self.enemy_in_range = True if enemies_in_range else False
 
-        if self.enemy_in_range and not self.being_dragged:  #Updating the blit image for the archers if enemies are in range
+        if self.enemy_in_range and not self.dragged:  #Updating the blit image for the archers if enemies are in range
             self.archer_count += 1
             if self.archer_count >= len(self.archer_images) * 3: 
                 self.archer_count = 0

@@ -6,13 +6,20 @@ import math
 import random
 
 class Enemy(GameObjects):
+    """
+    Reusable Enemy base class that monsters and bosses inherit from 
+    @param (STR) name: name of enemy
+    @param (STR) map_label: label to indicate which map is currently being used to get appropriate enemy path
+    """
     def __init__(self, name, map_label):
         super().__init__(name, GameConstants.PATH[map_label][0][0])
+        self.map_label = map_label
+
         # Each enemy has access to the game path
-        if len(GameConstants.PATH[map_label]) == 2: #Length of 2 means two possible routes
-            self.path = GameConstants.PATH[map_label][random.randint(0, 1)]
+        if len(GameConstants.PATH[self.map_label]) == 2: #Length of 2 means two possible routes
+            self.path = GameConstants.PATH[self.map_label][random.randint(0, 1)]
         else:
-            self.path = GameConstants.PATH[map_label][0] #Only one direct path to exit
+            self.path = GameConstants.PATH[self.map_label][0] #Only one direct path to exit
 
         # Enemy coordinates
         self.x = self.coord[0]
@@ -49,14 +56,19 @@ class Enemy(GameObjects):
 
         # Flips the images based on the unit_vector they're facing
         self.flipped = False
-        self.alter_image = None
     
         # For freezing logistics
         self.affected = False
-        self.default_move_speed = 3
+        self.default_move_speed = 2
         self.move_speed = self.default_move_speed
         
     def die(self, window):
+        """
+        If the enemy is dead, triggers the death animation and sets self.dead to be false to let the caller know when animation is fully complete
+        @param (SURFACE) window: surface to draw the death animation
+
+        --> return: None
+        """
         if self.dead:
             window.blit(self.death[self.death_animation_count // self.slow_down_death_animation], (self.x - self.image.get_width() / 2 + 15, (self.y - (self.image.get_height() / 2) - 10)))
             self.death_animation_count += 1
@@ -67,8 +79,9 @@ class Enemy(GameObjects):
     def move(self):
         """
         Moves our enemy along the path while also accounting for the unit_vectors that enemies face
-        Will return true if the next coordinate is a valid coordinate in the path and false if the enemy is beyond the path goal
-        :return: booleans
+        Returns true if the next coordinate is a valid coordinate in the path or false if the enemy is beyond the path 
+
+        --> return: Boolean
         """ 
         self.animation_count += 1
         if self.animation_count >= len(self.images) * self.slow_down_move_animation:
@@ -139,8 +152,9 @@ class Enemy(GameObjects):
     def draw(self, window):
         """
         Using our list of images, draws the enemy
-        :param window: surface
-        :return: None
+        @param (SURFACE) window: window surface to draw 
+
+        --> return: None
         """
         self.image = self.images[self.animation_count // self.slow_down_move_animation]
 
@@ -150,9 +164,10 @@ class Enemy(GameObjects):
 
     def health_bar(self, window):
         """
-        Making the health bar 
-        :param window: surface
-        :return: None
+        Creates the health bar and indicates how much hp remaining
+        @param (SURFACE) window: window surface to draw 
+
+        --> return: None
         """
         length = 60
         each_section = length / self.max_health
@@ -170,7 +185,10 @@ class Enemy(GameObjects):
     
     def update_speed_status(self, ice_towers):
         """
-        Updates the current speed of the enemy if it is no longer under the effect of ice towers
+        Resets the current speed of the enemy to the original speed if it is no longer under the effect of ice towers
+        @param (LIST) ice_towers: list of all the ice towers 
+
+        --> return: None
         """
         not_affected = True
         for t in ice_towers:
@@ -183,15 +201,19 @@ class Enemy(GameObjects):
             self.move_speed = self.default_move_speed
 
 class BossEnemy(Enemy):
+    """
+    Boss-enemy class that inherits from enemy with the same parameters and attributes
+    """
     def __init__(self, name, map_label):
         super().__init__(name, map_label)
         self.flipped = True #Flips the enemy if not facing the correct unit_vector
 
     def health_bar(self, window):
         """
-        Making the health bar 
-        :param window: surface
-        :return: None
+        Creates the health bar and indicates how much hp remaining (changes the size of the health bar in bosses)
+        @param (SURFACE) window: window surface to draw 
+
+        --> return: None
         """
         length = 100
         each_section = length / self.max_health
