@@ -1,11 +1,15 @@
 ## Python Tower Defense
+<img src = "https://imgur.com/joUN1oF">
+<img src = "https://imgur.com/zwyzxVG">
+<img src = "https://imgur.com/WhLiwjv">
 This is a basic tower defense game created entirely with vanilla Python and Pygame
 
 ## Motivation
 I've always wanted to create a tower defense game since I've drawn inspiration from games like Bloons Tower Defense and Warcraft 3 tower defense game maps. Furthermore, I wanted to practice more with object orientated programming and this game provided a great opportunity to create different classes for objects such as towers, enemies, menus, etc. 
 
-## Screenshots
-Include logo/demo screenshot etc.
+## Demo
+👉 Watch it <a href="https://www.youtube.com">here</a>.
+<br>
 
 ## Tech/framework used
 Ex. - Python, Pygame, MongoDB
