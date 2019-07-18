@@ -1,6 +1,5 @@
 ## Python Tower Defense
-This is a basic tower defense game created entirely with vanilla Python and Pygame
-<br/>
+This is a basic tower defense game created entirely with vanilla Python and Pygame \
 ![GitHub Logo](/images/main.png) 
 ![GitHub Logo](/images/username.png) 
 ![GitHub Logo](/images/overview.png)
@@ -17,9 +16,6 @@ Ex. - Python, Pygame, MongoDB
 
 <b>Built with</b>
 - [Python](https://www.python.org/)
-
-## Code Example
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
 
 ## Installation
 Provide step by step series of examples and explanations about how to get a development env running.
