@@ -1,4 +1,5 @@
 ## Python Tower Defense
+![Alt Text](https://imgur.com/joUN1oF)
 <img src = "https://imgur.com/joUN1oF">
 <img src = "https://imgur.com/zwyzxVG">
 <img src = "https://imgur.com/WhLiwjv">
