@@ -1,9 +1,7 @@
 ## Python Tower Defense
 ![GitHub Logo](/images/main.png)
-
-<img src = "https://imgur.com/joUN1oF">
-<img src = "https://imgur.com/zwyzxVG">
-<img src = "https://imgur.com/WhLiwjv">
+![GitHub Logo](/images/username.png)
+![GitHub Logo](/images/overview.png)
 This is a basic tower defense game created entirely with vanilla Python and Pygame
 
 ## Motivation
