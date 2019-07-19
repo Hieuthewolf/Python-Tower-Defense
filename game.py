@@ -126,7 +126,7 @@ class Game:
         # Logistics involving generating monster waves
         self.current_wave = 0
         self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave][:]
-
+        
         # Pausing the game
         self.pause_game = True
         self.game_state_button = GameStateButton(play_round, pause_round, self.width - play_round.get_width(),  wave.get_height() - 5)
