@@ -105,7 +105,7 @@ class Game:
         
         # Lives and life font
         self.font = game_font
-        self.lives = 15
+        self.lives = 1
 
         # Selecting tower logistics
         self.tower_selected = None
@@ -125,7 +125,7 @@ class Game:
 
         # Logistics involving generating monster waves
         self.current_wave = 0
-        self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave]
+        self.cur_wave_amounts = EnemyConstants.ENEMY_WAVES_AMOUNT[self.current_wave][:]
 
         # Pausing the game
         self.pause_game = True
@@ -437,6 +437,9 @@ class Game:
                         ending_screen = EndingScreen(self.window, "defeat", self.username, self.map_label)
 
                     if ending_screen.run_game() == 'restart':
+
+
+
                         return 'restart'
                     del ending_screen
 

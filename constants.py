@@ -108,33 +108,33 @@ class EnemyConstants:
     }
 
     #FOR testing purposes
-    # ENEMY_WAVES_AMOUNT = {
-    #     0: [1, 1, 1, 1],
-    #     1: [1, 1, 1, 1, 1], #Spawn mano at the end
-    #     2: [1, 1, 1, 1],
-    #     3: [1, 1, 1, 1, 1], #Spawn king slime at the end
-    #     4: [1, 1, 1, 1],
-    #     5: [1, 1, 1, 1, 1], #Spawn balrog at the end
-    #     6: [1, 1, 1, 1],
-    #     7: [1, 1, 1, 1, 1], #Spawn pianus at the end
-    #     8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    #     9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Spawn pink bean at the end
-    # }
+    ENEMY_WAVES_AMOUNT = {
+        0: [1, 1, 1, 1],
+        1: [1, 1, 1, 1, 1], #Spawn mano at the end
+        2: [1, 1, 1, 1],
+        3: [1, 1, 1, 1, 1], #Spawn king slime at the end
+        4: [1, 1, 1, 1],
+        5: [1, 1, 1, 1, 1], #Spawn balrog at the end
+        6: [1, 1, 1, 1],
+        7: [1, 1, 1, 1, 1], #Spawn pianus at the end
+        8: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        9: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Spawn pink bean at the end
+    }
 
     # Enemy waves are in the format of a wave #: (amount of monsters in each category, total_amount)
     # The tuple formed are formatted (monster 1, monster 2, monster 3, monster 4)
-    ENEMY_WAVES_AMOUNT = {
-        0: [35, 25, 15, 10],
-        1: [10, 35, 25, 15, 1], #Spawn mano at the end
-        2: [15, 10, 35, 25],
-        3: [10, 15, 25, 35, 1], #Spawn king slime at the end
-        4: [50, 35, 25, 15],
-        5: [15, 50, 35, 25, 1], #Spawn balrog at the end
-        6: [25, 15, 50, 35],
-        7: [15, 25, 35, 50, 1],  #Spawn pianus at the end
-        8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
-        9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50, 1] #Spawn pink bean at the end
-    }
+    # ENEMY_WAVES_AMOUNT = {
+    #     0: [35, 25, 15, 10],
+    #     1: [10, 35, 25, 15, 1], #Spawn mano at the end
+    #     2: [15, 10, 35, 25],
+    #     3: [10, 15, 25, 35, 1], #Spawn king slime at the end
+    #     4: [50, 35, 25, 15],
+    #     5: [15, 50, 35, 25, 1], #Spawn balrog at the end
+    #     6: [25, 15, 50, 35],
+    #     7: [15, 25, 35, 50, 1],  #Spawn pianus at the end
+    #     8: [15, 15, 15, 15, 15, 15, 15, 15, 35, 35],
+    #     9: [20, 20, 20, 20, 20, 20, 20, 20, 50, 50, 1] #Spawn pink bean at the end
+    # }
 
     # Collection of all the moving sprite images
     ENEMY_MOVING_SPRITE_IMAGES = {
